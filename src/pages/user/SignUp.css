@@ -31,12 +31,11 @@
   margin-top: 10px;
 }
 
-
-/* 2컬럼 그리드 */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 32px;
+  width: 100%;
 }
 
 .form-field {

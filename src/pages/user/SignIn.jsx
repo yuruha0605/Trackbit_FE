@@ -69,6 +69,12 @@ function SignIn() {
         <button type="submit" className="login-btn">
           Sign In
         </button>
+        <button
+          type="button"
+          className="forgot-btn"
+          onClick={() => navigate("/findPassword")}>
+          Forgot password? 
+        </button>
       </form>
     </div>
   );
