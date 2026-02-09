@@ -1,0 +1,65 @@
+.register-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-form {
+  width: 100%;
+  max-width: 1200px;
+  padding: 64px 24px;
+}
+
+/* 2컬럼 그리드 */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-field.full {
+  grid-column: span 2;
+}
+
+.form-field label {
+  font-size: 20px;
+  color: #1e1e1e;
+}
+
+.form-field input {
+  padding: 24px 32px;
+  font-size: 18px;
+  border-radius: 16px;
+  border: 2px solid #d9d9d9;
+  outline: none;
+}
+
+.form-field input::placeholder {
+  color: #b3b3b3;
+}
+
+/* 제출 버튼 */
+.submit-btn {
+  width: fit-content;
+  margin-top: 64px;
+  padding: 24px;
+  font-size: 20px;
+  border-radius: 16px;
+  background: #2c2c2c;
+  color: #f5f5f5;
+  border: none;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  opacity: 0.9;
+}

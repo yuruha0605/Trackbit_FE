@@ -1,0 +1,71 @@
+.update-user {
+  padding: 80px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  width: 100%;
+}
+
+.update-user__form {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.form-row {
+  display: flex;
+  gap: 32px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-group.full {
+  width: 100%;
+}
+
+.form-group label {
+  font-size: 18px;
+  color: #1e1e1e;
+}
+
+.form-group input {
+  padding: 16px;
+  font-size: 18px;
+  border-radius: 12px;
+  border: 1px solid #d9d9d9;
+}
+
+.form-group input:disabled {
+  background-color: #f5f5f5;
+}
+
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+.btn {
+  padding: 16px 32px;
+  font-size: 18px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background-color: #2c2c2c;
+  color: #fff;
+}
+
+.btn.danger {
+  background-color: #ec221f;
+  color: #fff;
+}

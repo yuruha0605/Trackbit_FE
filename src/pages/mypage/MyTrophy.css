@@ -1,0 +1,114 @@
+.mytrophy {
+  padding: 80px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  max-width: 80%;
+}
+
+/* 헤더 */
+.mytrophy-header h2 {
+  font-size: 32px;
+  font-weight: 600;
+  color: #1e1e1e;
+}
+
+.subtitle {
+  font-size: 22px;
+  color: #757575;
+  margin-top: 8px;
+}
+
+/* 미션 리스트 */
+.mission-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 48px;
+}
+
+.mission-card {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.mission-icon {
+  width: 44px;
+  height: 44px;
+  border: 3px solid #1e1e1e;
+  border-radius: 8px;
+}
+
+.mission-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mission-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e1e1e;
+}
+
+.mission-desc {
+  font-size: 18px;
+  line-height: 1.4;
+  color: #757575;
+}
+
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.page-numbers {
+  display: flex;
+  gap: 8px;
+}
+
+.page-btn {
+  padding: 8px 14px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.page-btn.active {
+  background-color: #2c2c2c;
+  color: #fff;
+}
+
+.page-btn.disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.page-ellipsis {
+  padding: 8px;
+  font-weight: bold;
+}
+
+/* 빈 상태 */
+.empty-state {
+  padding: 120px 0;
+  text-align: center;
+  color: #757575;
+}
+
+.empty-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1e1e1e;
+}
+
+.empty-desc {
+  margin-top: 12px;
+  font-size: 18px;
+}

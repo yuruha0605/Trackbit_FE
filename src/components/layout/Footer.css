@@ -1,0 +1,69 @@
+.footer {
+  width: 100%;
+  background: #fff;
+  border-top: 1px solid #d9d9d9;
+}
+
+.footer-inner {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 32px 32px 160px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.logo-img {
+  width: 100px;
+  height: 100px;
+}
+
+/* 브랜드 */
+.footer-brand {
+  width: 420px;
+  min-width: 384px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 16px;
+}
+
+.social-icons span {
+  width: 38px;
+  height: 38px;
+  background: #1e1e1e;
+}
+
+/* 섹션 */
+.footer-section {
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-section h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section li {
+  font-size: 14px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.footer-section li:hover {
+  text-decoration: underline;
+}

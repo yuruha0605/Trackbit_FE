@@ -1,0 +1,83 @@
+.login-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 640px;
+  padding: 48px;
+  border-radius: 16px;
+  border: 2px solid #d9d9d9;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  background: #ffffff;
+}
+
+/* 입력 필드 */
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-field label {
+  font-size: 20px;
+  color: #1e1e1e;
+}
+
+.login-field input {
+  padding: 22px 30px;
+  font-size: 18px;
+  border-radius: 16px;
+  border: 2px solid #d9d9d9;
+  outline: none;
+}
+
+.login-field input::placeholder {
+  color: #b3b3b3;
+}
+
+/* 로그인 버튼 */
+.login-btn {
+  margin-top: 16px;
+  padding: 22px;
+  font-size: 20px;
+  border-radius: 16px;
+  background: #2c2c2c;
+  color: #f5f5f5;
+  border: none;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  opacity: 0.9;
+}
+
+/* 비밀번호 찾기 */
+.forgot-btn {
+  margin-top: 4px;
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: #1e1e1e;
+  text-decoration: underline;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.register-btn {
+  margin-top: 1px;
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: #1e1e1e;
+  text-decoration: underline;
+  cursor: pointer;
+  align-self: flex-start;
+}
