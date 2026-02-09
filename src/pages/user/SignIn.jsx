@@ -26,7 +26,7 @@ function SignIn() {
         JSON.stringify({
           id: data.userId,
           loginId: data.loginId ?? id,
-          nickname: data.nickname,
+          name: data.name,
         })
       );
 

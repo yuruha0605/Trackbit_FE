@@ -6,11 +6,12 @@ import { getUser, logout } from "../../utils/auth";
 
 const NAV_ITEMS = [
   { label: "Home", path: "/" },
-  { label: "Calendar", path: "/" },
-  { label: "Mission", path: "/" },
-  { label: "Review", path: "/" },
-  { label: "Report", path: "/" },
-  { label: "Ranking", path: "/" },
+  { label: "Calendar", path: "/calendar" },
+  { label: "Habit", path: "/habit" },
+  { label: "Mission", path: "/mission" },
+  { label: "Review", path: "/review" },
+  { label: "Report", path: "/report" },
+  { label: "Ranking", path: "/rank" },
   { label: "My Page", path: "/mypage" },
 ];
 

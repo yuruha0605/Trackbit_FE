@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/mission.css';
+import './mission.css';
 
 const FormBox = ({ onSubmit, children }) => (
   <form className="form-box" onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>{children}</form>
@@ -57,7 +57,7 @@ const StarIcon = () => (
   </svg>
 );
 
-const mission = () => {
+const Mission = () => {
   return (
       <div className="page-background">
         <div className="main-layout">
@@ -126,4 +126,4 @@ const mission = () => {
   );
 };
 
-export default mission;
+export default Mission;

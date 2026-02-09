@@ -16,6 +16,14 @@ import FindPassword from "./pages/user/FindPassword";
 import { AlertProvider } from "./context/AlertContext";
 import useSseAlert from "./hooks/useSseAlert";
 
+import HabitAdd from "./pages/mission/AddHabit";
+import Mission from "./pages/mission/mission";
+import Report from "./pages/mission/Report";
+import RecommendPage from "./pages/mission/RecommendPage";
+import CalendarPage from "./pages/mission/CalendarPage";
+import ReviewPage from "./pages/mission/ReviewPage";
+import RankingPage from "./pages/dashboard/RankingPage";
+
 function App() {
   return (
     <AlertProvider>
@@ -36,6 +44,16 @@ function App() {
               <Route path="user" element={<UpdateUser />} />
               <Route path="trophy" element={<MyTrophy />} />
             </Route>
+
+            <Route path="/habit" element={<HabitAdd />}/>
+            <Route path="/mission" element={<Mission />}/>
+            <Route path="/report" element={<Report />}/>
+
+            <Route path="/recommend" element={<RecommendPage/>}/>
+            <Route path="/Calendar" element={<CalendarPage />}/>
+
+            <Route path="/review" element={<ReviewPage />}/>
+            <Route path="/rank" element={<RankingPage />}/>
           </Routes>
         </main>
 

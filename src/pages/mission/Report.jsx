@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/Report.css';
+import './Report.css';
 
 const Report = () => {
   // 데이터 예시
