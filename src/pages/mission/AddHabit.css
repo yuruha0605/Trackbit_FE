@@ -1,0 +1,152 @@
+.add-wrapper {
+          width: 100%;
+          min-height: 100vh;
+          background-color: white;
+          display: flex;
+          justify-content: center;
+          padding: 40px 20px;
+          box-sizing: border-box;
+          font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        .add-container {
+          width: 100%;
+          max-width: 900px;
+          display: flex;
+          flex-direction: column;
+          gap: 40px;
+        }
+
+        /* 상단 헤더 영역 */
+        .header-section {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          flex-wrap: wrap;
+          gap: 20px;
+        }
+
+        .header-title {
+          font-size: 28px;
+          font-weight: 400;
+          color: #1E1E1E;
+          margin: 0;
+          line-height: 1.4;
+        }
+
+        .header-subtitle {
+          font-size: 14px;
+          color: #757575;
+          margin-top: 8px;
+        }
+
+        /* 태그 버튼 그리드 */
+        .tags-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+        }
+
+        .tag-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          background-color: #2C2C2C;
+          color: #F5F5F5;
+          padding: 12px 24px;
+          border-radius: 12px;
+          font-size: 16px;
+          cursor: pointer;
+          transition: 0.2s;
+          white-space: nowrap;
+        }
+
+        .tag-button:hover {
+          background-color: #444;
+          transform: translateY(-2px);
+        }
+
+        /* 리스트 카드 영역 */
+        .list-card {
+          background: white;
+          border: 1px solid #D9D9D9;
+          border-radius: 16px;
+          padding: 32px;
+          box-shadow: 0 8px 24px rgba(12, 12, 13, 0.05);
+        }
+
+        .card-header-text {
+          margin-bottom: 24px;
+        }
+
+        .card-sub-label {
+          font-size: 14px;
+          color: #757575;
+          margin-bottom: 6px;
+          display: block;
+        }
+
+        .card-main-label {
+          font-size: 24px;
+          font-weight: 700;
+          color: #1E1E1E;
+        }
+
+        .divider {
+          height: 1px;
+          background-color: #E5E5E5;
+          margin-bottom: 24px;
+        }
+
+        /* 습관 아이템 리스트 */
+        .habit-list {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .habit-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 20px;
+          padding: 16px;
+          border-radius: 12px;
+          transition: background-color 0.2s;
+          cursor: pointer;
+        }
+
+        .habit-item:hover {
+          background-color: #F8F9FA;
+        }
+
+        .habit-info {
+          flex: 1;
+        }
+
+        .habit-top {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 6px;
+        }
+
+        .habit-name {
+          font-size: 20px;
+          font-weight: 500;
+          color: #1E1E1E;
+        }
+
+        .shortcut-badge {
+          font-size: 14px;
+          color: #1E1E1E;
+          background-color: #F0F0F0;
+          padding: 4px 8px;
+          border-radius: 6px;
+        }
+
+        .habit-desc {
+          font-size: 15px;
+          color: #757575;
+          margin: 0;
+        }
