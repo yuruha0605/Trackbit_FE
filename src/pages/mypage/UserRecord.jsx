@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./UserRecord.css";
 import api from "../../api/axios";
+import cal from "../../assets/icons/Calendar.png";
+import award from "../../assets/icons/Award.png";
 
 export default function UserRecord() {
   const [record, setRecord] = useState({
@@ -50,14 +52,14 @@ export default function UserRecord() {
       {/* 통계 */}
       <div className="record-stats">
         <div className="stat-item">
-          <span className="stat-icon">🔥</span>
+          <img src={cal} alt="calendar" className="stat-icon" />
           <span className="stat-text">
             {record.streakDays}일 연속 성공
           </span>
         </div>
 
         <div className="stat-item">
-          <span className="stat-icon">✅</span>
+          <img src={award} alt="award" className="stat-icon" />
           <span className="stat-text">
             완료한 미션 {record.completedMissions}개
           </span>
