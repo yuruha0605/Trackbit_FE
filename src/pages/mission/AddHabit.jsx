@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../mission/AddHabit.css';
+import './AddHabit.css';
 const HabitAdd = () => {
   // --- [상태 및 데이터 정의] ---
   const [selectedTag, setSelectedTag] = useState('운동');
@@ -78,3 +78,4 @@ const HabitAdd = () => {
 
 
 export default HabitAdd;
+
