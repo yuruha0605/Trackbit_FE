@@ -1,62 +1,87 @@
 import { useNavigate } from "react-router-dom";
-import "./SignUp.css";
 import { useState } from "react";
-import api from "../../api/axios";
+import "./SignUp.css";
+import api from "../../api/axios.js";
+
 
 const FORM_FIELDS = [
-  { label: "ID", name: "id", type: "text" },
-  { label: "Name", name: "name", type: "text" },
-  { label: "Job", name: "job", type: "text" },
-  { label: "Password", name: "password", type: "password" },
-  { label: "What are you interest about?", name: "interest", type: "text" },
+  { label: "ID", name: "loginId", type: "text", required: true },
+  { label: "Name", name: "name", type: "text", required: true },
+  { label: "Password", name: "password", type: "password", required: true },
+  { label: "Job", name: "job", type: "text", required: false },
+  { label: "Interest", name: "interest", type: "text", required: false },
 ];
 
 function SignUp() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
-    name : '',
-    email : '',
-    password : ''
+    loginId: "",
+    name: "",
+    password: "",
+    job: "",
+    interest: "",
   });
-  
-  const handlerChange = (e) => {
-    const {name, value} = e.target ;  
-    setForm({...form , [name]: value })
+
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const moveUrl = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-  const handlerSubmit = async (e) => {       
-    e.preventDefault() ;
-    try{
-      const response = await api.post("/users/signUp" , {
-        name : form.name ,
-        email : form.email,
-        password : form.password
-      }) 
-      moveUrl("/signin"); 
+    try {
+      await api.post("/users/signUp", {
+        loginId: form.loginId,
+        name: form.name,
+        password: form.password,
+        job: form.job,
+        interest: form.interest,
+      });
+
+      navigate("/signin");
     } catch (err) {
-      console.log(">>>> axios err : " , err );    
+      setError(
+        err.response?.data?.message ||
+          "회원가입 중 오류가 발생했습니다."
+      );
+      console.error("signup error:", err);
     }
-  }
+  };
+
   return (
     <div className="register-page">
-      <form className="register-form">
+      <form className="register-form" onSubmit={handleSubmit}>
+        <p className="required-info">
+          <span className="required">*</span> 필수 입력 항목
+        </p>
+
         <div className="form-grid">
-          {FORM_FIELDS.map(({ label, name, type, full }) => (
-            <div
-              key={name}
-              className={`form-field ${full ? "full" : ""}`}
-            >
-              <label htmlFor={name}>{label}</label>
+          {FORM_FIELDS.map(({ label, name, type, required }) => (
+            <div key={name} className="form-field">
+              <label htmlFor={name}>
+                {label}
+                {required && <span className="required">*</span>}
+              </label>
+
               <input
                 id={name}
                 name={name}
                 type={type}
-                placeholder={name}
+                value={form[name]}
+                onChange={handleChange}
+                placeholder={label}
+                required={required}
               />
             </div>
           ))}
         </div>
+
+        {error && <p className="register-error">{error}</p>}
 
         <button type="submit" className="submit-btn">
           Register

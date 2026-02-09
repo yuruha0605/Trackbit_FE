@@ -1,11 +1,12 @@
 import "./SignIn.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/axios.js";
 
 function SignIn() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+  const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -14,28 +15,27 @@ function SignIn() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+      const { data } = await api.post("/api/auth/login", {
+        id,
+        password,
       });
 
-      if (!response.ok) {
-        throw new Error("이메일 또는 비밀번호가 올바르지 않습니다.");
-      }
-
-      const data = await response.json();
-
       localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          id: data.userId,
+          loginId: data.loginId ?? id,
+          nickname: data.nickname,
+        })
+      );
 
       navigate("/mypage");
     } catch (err) {
-      setError(err.message);
+      setError(
+        err.response?.data?.message ||
+        "아이디 또는 비밀번호가 올바르지 않습니다."
+      );
     }
   };
 
@@ -43,25 +43,23 @@ function SignIn() {
     <div className="login-page">
       <form className="login-card" onSubmit={handleSubmit}>
         <div className="login-field">
-          <label htmlFor="email">Email</label>
+          <label>ID</label>
           <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="email@example.com"
+            type="text"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+            placeholder="ID"
             required
           />
         </div>
 
         <div className="login-field">
-          <label htmlFor="password">Password</label>
+          <label>Password</label>
           <input
-            id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            placeholder="password"
             required
           />
         </div>
@@ -70,22 +68,6 @@ function SignIn() {
 
         <button type="submit" className="login-btn">
           Sign In
-        </button>
-
-        <button
-          type="button"
-          className="forgot-btn"
-          onClick={() => navigate("/forgot-password")}
-        >
-          Forgot password?
-        </button>
-
-        <button
-          type="button"
-          className="register-btn"
-          onClick={() => navigate("/register")}
-        >
-          Register
         </button>
       </form>
     </div>

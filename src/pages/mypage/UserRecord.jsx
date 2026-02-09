@@ -1,6 +1,44 @@
+import { useEffect, useState } from "react";
 import "./UserRecord.css";
+import api from "../../api/axios";
 
 export default function UserRecord() {
+  const [record, setRecord] = useState({
+    streakDays: 0,
+    completedMissions: 0,
+    topTags: [],
+  });
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserRecord = async () => {
+      try {
+        const res = await api.get("/users/record", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
+        setRecord({
+          streakDays: res.data.streakDays,
+          completedMissions: res.data.completedMissions,
+          topTags: res.data.topTags || [],
+        });
+      } catch (err) {
+        console.error("record fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserRecord();
+  }, []);
+
+  if (loading) {
+    return <p className="record-loading">기록 불러오는 중...</p>;
+  }
+
   return (
     <section className="user-record">
       {/* 헤더 */}
@@ -13,12 +51,16 @@ export default function UserRecord() {
       <div className="record-stats">
         <div className="stat-item">
           <span className="stat-icon">🔥</span>
-          <span className="stat-text">n일 연속 성공</span>
+          <span className="stat-text">
+            {record.streakDays}일 연속 성공
+          </span>
         </div>
 
         <div className="stat-item">
           <span className="stat-icon">✅</span>
-          <span className="stat-text">완료한 미션 n개</span>
+          <span className="stat-text">
+            완료한 미션 {record.completedMissions}개
+          </span>
         </div>
       </div>
 
@@ -29,9 +71,13 @@ export default function UserRecord() {
         </p>
 
         <div className="tag-list">
-          <Tag label="Tag" />
-          <Tag label="Tag" />
-          <Tag label="Tag" />
+          {record.topTags.length > 0 ? (
+            record.topTags.map((tag) => (
+              <Tag key={tag} label={tag} />
+            ))
+          ) : (
+            <p className="tag-empty">아직 기록이 없어요</p>
+          )}
         </div>
       </div>
     </section>
