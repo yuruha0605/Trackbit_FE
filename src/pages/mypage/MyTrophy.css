@@ -1,13 +1,13 @@
 .mytrophy {
-  padding: 80px 120px;
+  padding: 60px 80px;
   display: flex;
   flex-direction: column;
   gap: 60px;
-  max-width: 80%;
+  max-width: 900px;
 }
 
 /* 헤더 */
-.mytrophy-header h2 {
+.mytrophy-title {
   font-size: 36px;
   font-weight: 600;
   margin-top: 8px;
@@ -94,7 +94,7 @@
 
 /* 빈 상태 */
 .empty-state {
-  padding: 120px 0;
+  padding: 60px 0;
   text-align: center;
   color: #757575;
 }

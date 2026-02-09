@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./MyTrophy.css";
 import award from "../../assets/icons/Award.png";
+import api from "../../api/axios.js"
 
 const ITEMS_PER_PAGE = 6;
 
@@ -10,18 +11,26 @@ function MyTrophy() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    // 실제 API 호출 시 교체
-    setTimeout(() => {
-      // 테스트용
-      setMissions(
-        Array.from({ length: 10 }, (_, i) => ({
-          id: i + 1,
-          title: `미션 ${i + 1}`,
-          description: "미션 설명입니다.",
-        }))
-      );
-      setLoading(false);
-    }, 500);
+    const fetchTrophies = async () => {
+      try {
+        setLoading(true);
+
+        const { data } = await api.get("/api/trophies", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
+        setMissions(data);
+      } catch (err) {
+        console.error("트로피 조회 실패:", err);
+        setMissions([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTrophies();
   }, []);
 
   if (loading) {
@@ -33,8 +42,8 @@ function MyTrophy() {
     return (
       <div className="mytrophy">
         <section className="mytrophy-header">
-          <h2>완료한 미션</h2>
           <span className="subtitle">Trophy</span>
+          <h2 className="mytrophy-title">완료한 미션</h2>
         </section>
 
         <div className="empty-state">
@@ -58,8 +67,8 @@ function MyTrophy() {
   return (
     <div className="mytrophy">
       <section className="mytrophy-header">
-        <span className="subtitle">Trophy</span>
-        <h2>완료한 미션</h2>
+          <span className="subtitle">Trophy</span>
+          <h2 className="mytrophy-title">완료한 미션</h2>
       </section>
 
       {/* 미션 카드 */}
