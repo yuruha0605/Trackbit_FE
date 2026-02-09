@@ -1,5 +1,5 @@
 import React from 'react';
-import '../mission/mission.css';
+import './mission.css';
 
 const FormBox = ({ onSubmit, children }) => (
   <form className="form-box" onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>{children}</form>
@@ -128,3 +128,4 @@ const mission = () => {
 
 
 export default mission;
+
