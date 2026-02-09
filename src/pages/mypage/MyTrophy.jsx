@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./MyTrophy.css";
+import award from "../../assets/icons/Award.png";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -57,15 +58,15 @@ function MyTrophy() {
   return (
     <div className="mytrophy">
       <section className="mytrophy-header">
-        <h2>완료한 미션</h2>
         <span className="subtitle">Trophy</span>
+        <h2>완료한 미션</h2>
       </section>
 
       {/* 미션 카드 */}
       <section className="mission-list">
         {currentMissions.map((mission) => (
           <div className="mission-card" key={mission.id}>
-            <div className="mission-icon" />
+            <img src={award} alt="award" className="mission-icon" />
 
             <div className="mission-content">
               <h3 className="mission-title">{mission.title}</h3>
