@@ -47,7 +47,7 @@ function SignUp() {
   return (
     <div className="page-center">
       <form
-        className="page-container container-lg"
+        className="page-container container-md"
         onSubmit={handleSubmit}
       >
         <p className="required-info">

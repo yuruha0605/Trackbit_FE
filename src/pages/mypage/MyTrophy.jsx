@@ -79,7 +79,6 @@ function MyTrophy() {
 
             <div className="mission-content">
               <h3 className="mission-title">{mission.title}</h3>
-              <p className="mission-desc">{mission.description}</p>
             </div>
           </div>
         ))}

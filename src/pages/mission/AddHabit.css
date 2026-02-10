@@ -1,11 +1,6 @@
 .dashboard-container {
   display: flex;
-  gap: 24px;      
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px;
-  background-color: #ffffff; 
-  min-height: 100vh;
+  gap: 24px;
   align-items: flex-start;
 }
 
