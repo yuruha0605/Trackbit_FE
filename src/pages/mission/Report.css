@@ -1,5 +1,13 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;     
+  min-height: 100vh;       
+  margin: 0;               
+}
+
 .report-container {
-  min-height: 100vh;
+    width: 100%;
     padding: 40px;
     background-color: #ffffff;
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
