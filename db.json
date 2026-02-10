@@ -1,0 +1,53 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "loginId": "test",
+      "password": "1234",
+      "name": "테스트 유저",
+      "job": "Developer",
+      "interest": "React"
+    },
+    {
+      "id": 1770696398944,
+      "loginId": "testtesttest",
+      "password": "12345678",
+      "name": "testname",
+      "job": "job",
+      "interest": "interest"
+    }
+  ],
+  "records": [
+    {
+      "id": 1,
+      "userId": 1,
+      "streakDays": 7,
+      "completedMissions": 12,
+      "topTags": [
+        "운동",
+        "공부",
+        "루틴"
+      ]
+    }
+  ],
+  "trophies": [
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "미션1 완료",
+      "description": "미션 설명"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "미션2 완료",
+      "description": "미션 설명"
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "title": "미션3 완료",
+      "description": "미션 설명"
+    }
+  ]
+}
