@@ -27,7 +27,9 @@ const MyPage = () => {
 
       {/* Content */}
       <main className="mypage-content">
-        <Outlet />
+        <div className="mypage-inner">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

@@ -114,3 +114,24 @@
   font-size: 13px;
   margin-top: 10px;
 }
+
+/* =========================
+   MyPage Header
+========================= */
+.mypage-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 48px;
+}
+
+.mypage-subtitle {
+  font-size: 28px;
+  color: #757575;
+}
+
+.mypage-title {
+  font-size: 36px;
+  font-weight: 600;
+  color: #1e1e1e;
+}

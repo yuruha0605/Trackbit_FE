@@ -98,10 +98,12 @@ function UpdateUser() {
 
   return (
     <div className="update-user">
-      <form
-        className="page-container container-lg"
-        onSubmit={handleSubmit}
-      >
+      <form onSubmit={handleSubmit}>
+        <header className="mypage-header">
+          <span className="mypage-subtitle">Account</span>
+          <h1 className="mypage-title">내 정보 수정</h1>
+        </header>
+
         {error && <p className="error-text">{error}</p>}
 
         <div className="form-grid">

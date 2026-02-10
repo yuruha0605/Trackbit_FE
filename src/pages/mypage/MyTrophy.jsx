@@ -66,10 +66,10 @@ function MyTrophy() {
 
   return (
     <div className="mytrophy">
-      <section className="mytrophy-header">
-          <span className="subtitle">Trophy</span>
-          <h2 className="mytrophy-title">완료한 미션</h2>
-      </section>
+      <header className="mypage-header">
+        <span className="mypage-subtitle">Trophy</span>
+        <h1 className="mypage-title">완료한 미션</h1>
+      </header>
 
       {/* 미션 카드 */}
       <section className="mission-list">
@@ -101,9 +101,8 @@ function MyTrophy() {
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
-              className={`page-btn ${
-                page === currentPage ? "active" : ""
-              }`}
+              className={`page-btn ${page === currentPage ? "active" : ""
+                }`}
               onClick={() => setCurrentPage(page)}
             >
               {page}
@@ -113,9 +112,8 @@ function MyTrophy() {
 
         {/* Next */}
         <button
-          className={`page-btn ${
-            currentPage === totalPages ? "disabled" : ""
-          }`}
+          className={`page-btn ${currentPage === totalPages ? "disabled" : ""
+            }`}
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage((p) => p + 1)}
         >

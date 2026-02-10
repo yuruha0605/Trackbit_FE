@@ -37,3 +37,17 @@
   background: #cdcdcd;
   font-weight: 500;
 }
+
+.mypage-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  background: #ffffff;
+}
+
+.mypage-inner {
+  width: 100%;
+  max-width: 1200px;
+  padding: 80px 120px;
+  box-sizing: border-box;
+}

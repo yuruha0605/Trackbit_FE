@@ -44,9 +44,9 @@ export default function UserRecord() {
   return (
     <section className="user-record">
       {/* 헤더 */}
-      <header className="record-header">
-        <span className="record-subtitle">User Record</span>
-        <h1 className="record-title">사용자 기록</h1>
+      <header className="mypage-header">
+        <span className="mypage-subtitle">User Record</span>
+        <h1 className="mypage-title">사용자 기록</h1>
       </header>
 
       {/* 통계 */}
