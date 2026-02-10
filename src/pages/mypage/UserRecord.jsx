@@ -90,7 +90,6 @@ function Tag({ label }) {
   return (
     <div className="tag">
       <span>{label}</span>
-      <span className="tag-icon">+</span>
     </div>
   );
 }

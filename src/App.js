@@ -13,6 +13,7 @@ import HomePage from "./pages/home/HomePage";
 import MyTrophy from "./pages/mypage/MyTrophy";
 import UserRecord from "./pages/mypage/UserRecord";
 import FindPassword from "./pages/user/FindPassword";
+import ResetPassword from "./pages/user/ResetPassword";
 
 import { AlertProvider } from "./context/AlertContext";
 import useSseAlert from "./hooks/useSseAlert";
@@ -40,7 +41,8 @@ function App() {
 
             <Route path="/register" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
-            <Route path="/findPassword" element={<FindPassword />}/>
+            <Route path="/findPassword" element={<FindPassword />} />
+            <Route path="/resetPassword" element={<ResetPassword />}/>
 
             <Route path="/mypage" element={<MyPage />}>
               <Route index element={<UserRecord />} />
