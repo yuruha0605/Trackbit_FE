@@ -1,4 +1,3 @@
-import React from 'react';
 import './mission.css';
 
 const FormBox = ({ onSubmit, children }) => (
@@ -115,7 +114,7 @@ const Mission = () => {
               
               <ButtonGroup align="justify">
                   <Button variant="primary" onPress={() => {}}>
-                      Save information
+                      미션 등록하기
                   </Button>
               </ButtonGroup>
             </FormBox>

@@ -1,4 +1,4 @@
-.page-background {
+        .page-background {
           min-height: 100vh;
           background-color: #f8f9fa;
           display: flex;
@@ -84,3 +84,8 @@
         }
         .btn-primary { background: #222; color: white; }
         .btn-primary:hover { background: #000; }
+        /* 반응형 처리 */
+        @media (max-width: 850px) {
+          .main-layout { flex-direction: column; }
+          .page-background { padding: 20px; }
+        }

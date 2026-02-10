@@ -1,43 +1,34 @@
-.add-wrapper {
-          width: 100%;
-          min-height: 100vh;
-          background-color: white;
-          display: flex;
-          justify-content: center;
-          padding: 40px 20px;
-          box-sizing: border-box;
-          font-family: 'Inter', -apple-system, sans-serif;
-        }
-
         .add-container {
-          width: 100%;
-          max-width: 900px;
+          min-height: 100vh;
+          background-color: #ffff;
           display: flex;
+          align-items: center;
+          padding: 60px 20px;
+          box-sizing: border-box;
           flex-direction: column;
+          font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
           gap: 40px;
         }
 
         /* 상단 헤더 영역 */
+        .header-section, .list-card{
+          width: 100%;
+          max-width: 1000px;
+        }
         .header-section {
           display: flex;
           justify-content: space-between;
-          align-items: flex-start;
+          align-items: flex-end;
           flex-wrap: wrap;
           gap: 20px;
         }
 
+
         .header-title {
-          font-size: 28px;
-          font-weight: 400;
+          font-size: 32px;
+          font-weight: 500;
           color: #1E1E1E;
           margin: 0;
-          line-height: 1.4;
-        }
-
-        .header-subtitle {
-          font-size: 14px;
-          color: #757575;
-          margin-top: 8px;
         }
 
         /* 태그 버튼 그리드 */
@@ -50,16 +41,15 @@
         .tag-button {
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: space-between;
           gap: 8px;
           background-color: #2C2C2C;
           color: #F5F5F5;
-          padding: 12px 24px;
-          border-radius: 12px;
-          font-size: 16px;
+          padding: 12px 20px;
+          border-radius: 8px;
+          font-size: 15px;
           cursor: pointer;
           transition: 0.2s;
-          white-space: nowrap;
         }
 
         .tag-button:hover {
@@ -72,8 +62,9 @@
           background: white;
           border: 1px solid #D9D9D9;
           border-radius: 16px;
-          padding: 32px;
-          box-shadow: 0 8px 24px rgba(12, 12, 13, 0.05);
+          padding: 40px;
+          box-shadow: 0 4px 20px rgba(12, 12, 13, 0.05);
+          box-sizing: border-box;
         }
 
         .card-header-text {
@@ -91,44 +82,52 @@
           font-size: 24px;
           font-weight: 700;
           color: #1E1E1E;
+          margin-bottom: 20px;
         }
 
         .divider {
+          width: 100%;
           height: 1px;
           background-color: #E5E5E5;
-          margin-bottom: 24px;
+          margin-bottom: 10px;
         }
 
         /* 습관 아이템 리스트 */
         .habit-list {
           display: flex;
           flex-direction: column;
-          gap: 12px;
         }
 
         .habit-item {
           display: flex;
-          align-items: flex-start;
-          gap: 20px;
-          padding: 16px;
-          border-radius: 12px;
+          align-items: center;
+          gap: 10px;
+          padding: 20px 10px;
+          border-bottom: 1px solid #F5F5F5;
           transition: background-color 0.2s;
           cursor: pointer;
         }
-
+        
+        .habit-item:last-child {
+          border-bottom: none;
+        }
         .habit-item:hover {
           background-color: #F8F9FA;
         }
 
+        
         .habit-info {
           flex: 1;
+          display: flex;
+          flex-direction: column;
+          
         }
 
         .habit-top {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 6px;
+          
         }
 
         .habit-name {
@@ -138,15 +137,32 @@
         }
 
         .shortcut-badge {
+          display: flex;
+          align-items: center;
           font-size: 14px;
+          font-weight: 500;
           color: #1E1E1E;
           background-color: #F0F0F0;
-          padding: 4px 8px;
+          padding: 6px 10px;
           border-radius: 6px;
         }
 
         .habit-desc {
           font-size: 15px;
           color: #757575;
-          margin: 0;
+        }
+
+        /* 모바일 반응형 */
+        @media (max-width: 768px) {
+          .add-container {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+          .header-section {
+            width: 100%;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* 화면 너비에 맞춰 자동 배치 */
+          }
+          .list-card {
+            padding: 20px;
+          }
         }
