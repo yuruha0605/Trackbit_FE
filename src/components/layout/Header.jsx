@@ -1,8 +1,7 @@
 import "./Header.css";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import logo from "../../assets/images/logo.png";
-import { getUser, logout } from "../../utils/auth";
+import { useAuth } from "../../context/AuthContext";
 
 const NAV_ITEMS = [
   { label: "Home", path: "/" },
@@ -17,15 +16,10 @@ const NAV_ITEMS = [
 
 function Header() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    setUser(getUser());
-  }, []);
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
     logout();
-    setUser(null);
     navigate("/signin");
   };
 
@@ -56,11 +50,8 @@ function Header() {
         <div className="header-auth">
           {user ? (
             <>
-              <span className="user-name">{user.nickname}</span>
-              <button
-                className="auth-btn neutral"
-                onClick={handleLogout}
-              >
+              <span className="user-name">{user.name}</span>
+              <button className="auth-btn neutral" onClick={handleLogout}>
                 Logout
               </button>
             </>

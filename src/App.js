@@ -23,9 +23,11 @@ import RecommendPage from "./pages/mission/RecommendPage";
 import CalendarPage from "./pages/mission/CalendarPage";
 import ReviewPage from "./pages/mission/ReviewPage";
 import RankingPage from "./pages/dashboard/RankingPage";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
+    <AuthProvider>
     <AlertProvider>
       <SseListener/>
       <BrowserRouter>
@@ -60,6 +62,7 @@ function App() {
         <Footer />
       </BrowserRouter>
     </AlertProvider>
+    </AuthProvider>
   );
 }
 

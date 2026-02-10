@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./UpdateUser.css";
 import api from "../../api/axios.js";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function UpdateUser() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ function UpdateUser() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { logout } = useAuth();
 
   /** 내 정보 조회 */
   useEffect(() => {
@@ -91,7 +93,7 @@ function UpdateUser() {
         },
       });
 
-      localStorage.clear();
+      logout();
       navigate("/");
     } catch (err) {
       console.error(err);

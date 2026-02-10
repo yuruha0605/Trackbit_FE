@@ -2,9 +2,11 @@ import "./SignIn.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios.js";
+import { useAuth } from "../../context/AuthContext";
 
 function SignIn() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
@@ -20,16 +22,16 @@ function SignIn() {
         password,
       });
 
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: data.userId,
-          loginId: data.loginId ?? id,
-          name: data.name,
-        })
-      );
+      const userData = {
+        id: data.userId,
+        loginId: data.loginId ?? id,
+        name: data.name,
+      };
 
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      login(userData); // ⭐ Header 즉시 반영
       navigate("/mypage");
     } catch (err) {
       setError(
