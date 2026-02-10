@@ -1,168 +1,186 @@
-        .add-container {
-          min-height: 100vh;
-          background-color: #ffff;
-          display: flex;
-          align-items: center;
-          padding: 60px 20px;
-          box-sizing: border-box;
-          flex-direction: column;
-          font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-          gap: 40px;
-        }
-
-        /* 상단 헤더 영역 */
-        .header-section, .list-card{
-          width: 100%;
-          max-width: 1000px;
-        }
-        .header-section {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-          flex-wrap: wrap;
-          gap: 20px;
-        }
+.dashboard-container {
+  display: flex;
+  gap: 24px;      
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px;
+  background-color: #ffffff; 
+  min-height: 100vh;
+  align-items: flex-start;
+}
 
 
-        .header-title {
-          font-size: 32px;
-          font-weight: 500;
-          color: #1E1E1E;
-          margin: 0;
-        }
+.left-column {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-        /* 태그 버튼 그리드 */
-        .tags-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 12px;
-        }
 
-        .tag-button {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 8px;
-          background-color: #2C2C2C;
-          color: #F5F5F5;
-          padding: 12px 20px;
-          border-radius: 8px;
-          font-size: 15px;
-          cursor: pointer;
-          transition: 0.2s;
-        }
+.right-column {
+  flex: 1;
+  position: sticky;
+  top: 20px;
+}
 
-        .tag-button:hover {
-          background-color: #444;
-          transform: translateY(-2px);
-        }
 
-        /* 리스트 카드 영역 */
-        .list-card {
-          background: white;
-          border: 1px solid #D9D9D9;
-          border-radius: 16px;
-          padding: 40px;
-          box-shadow: 0 4px 20px rgba(12, 12, 13, 0.05);
-          box-sizing: border-box;
-        }
+.header-title {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 12px;
+}
 
-        .card-header-text {
-          margin-bottom: 24px;
-        }
+.tags-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
 
-        .card-sub-label {
-          font-size: 14px;
-          color: #757575;
-          margin-bottom: 6px;
-          display: block;
-        }
+.tag-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #333;
+  color: white;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
 
-        .card-main-label {
-          font-size: 24px;
-          font-weight: 700;
-          color: #1E1E1E;
-          margin-bottom: 20px;
-        }
+.tag-button.active {
+  background: #000;
+}
 
-        .divider {
-          width: 100%;
-          height: 1px;
-          background-color: #E5E5E5;
-          margin-bottom: 10px;
-        }
+/* 카드 공통 스타일 (리스트 카드 & 폼 카드) */
+.list-card, .form-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+  padding: 24px;
+}
 
-        /* 습관 아이템 리스트 */
-        .habit-list {
-          display: flex;
-          flex-direction: column;
-        }
+/* --- 리스트 카드 내부 스타일 --- */
+.card-sub-label {
+  font-size: 12px;
+  color: #888;
+}
 
-        .habit-item {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 20px 10px;
-          border-bottom: 1px solid #F5F5F5;
-          transition: background-color 0.2s;
-          cursor: pointer;
-        }
-        
-        .habit-item:last-child {
-          border-bottom: none;
-        }
-        .habit-item:hover {
-          background-color: #F8F9FA;
-        }
+.card-main-label {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 4px;
+}
 
-        
-        .habit-info {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          
-        }
+.divider {
+  height: 1px;
+  background: #eee;
+  margin: 16px 0;
+}
 
-        .habit-top {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          
-        }
+.habit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f5f5f5;
+}
 
-        .habit-name {
-          font-size: 20px;
-          font-weight: 500;
-          color: #1E1E1E;
-        }
+.habit-item:hover{
+  background-color: #f3f4f6;
+  transform: translateX(4px);
+}
 
-        .shortcut-badge {
-          display: flex;
-          align-items: center;
-          font-size: 14px;
-          font-weight: 500;
-          color: #1E1E1E;
-          background-color: #F0F0F0;
-          padding: 6px 10px;
-          border-radius: 6px;
-        }
+.habit-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
 
-        .habit-desc {
-          font-size: 15px;
-          color: #757575;
-        }
+.habit-name {
+  font-weight: 600;
+}
 
-        /* 모바일 반응형 */
-        @media (max-width: 768px) {
-          .add-container {
-            flex-direction: column;
-            align-items: flex-start;
-          }
-          .header-section {
-            width: 100%;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* 화면 너비에 맞춰 자동 배치 */
-          }
-          .list-card {
-            padding: 20px;
-          }
-        }
+.shortcut-badge {
+  font-size: 10px;
+  background: #eee;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #666;
+}
+
+.habit-desc {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+/* --- 오른쪽 폼 스타일--- */
+.form-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box; /* 패딩 포함 크기 계산 */
+}
+
+.form-group textarea {
+  resize: vertical; /* 세로 크기 조절만 허용 */
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.btn-cancel, .btn-submit {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-cancel {
+  background: #f3f4f6;
+  color: #555;
+}
+
+.btn-submit {
+  background: #1f2937; /* 진한 회색/검정 */
+  color: white;
+}
+
+.btn-submit:hover {
+  background: #000;
+}
