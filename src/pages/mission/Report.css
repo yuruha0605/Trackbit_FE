@@ -1,147 +1,115 @@
-/* src/styles/MissionReport.css */
-
-/* 전체 컨테이너 */
 .report-container {
-  width: 100%;
-  max-width: 1200px; /* 너무 넓어지지 않도록 제한 */
-  background-color: white;
-  padding: 40px;
-  box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
-  color: #1E1E1E;
+  min-height: 100vh;
+    padding: 40px;
+    background-color: #ffffff;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-/* --- 상단 영역 (결과 카드 + 태그) --- */
-.report-top-section {
-  display: flex;
-  gap: 40px;
-  margin-bottom: 60px;
-  align-items: flex-start;
-  flex-wrap: wrap; /* 모바일에서 줄바꿈 */
+/* 상단 헤더 섹션 */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
-/* 왼쪽: 결과 텍스트 박스 */
-.result-card {
-  flex: 0 0 auto;
-  min-width: 300px;
-  padding: 35px;
-  background: white;
-  border-radius: 18px;
-  border: 2px solid #D9D9D9;
+.title-box {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px 30px;
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
-.result-text {
-  font-size: 24px; /* 원본 비율에 맞춰 조정 */
-  font-weight: 400;
-  line-height: 1.4;
-  word-wrap: break-word;
+.tag-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
-/* 오른쪽: 태그 영역 */
-.tags-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding-top: 10px; /* 시각적 높이 보정 */
+.tag-title {
+    font-size: 1.1rem;
+    font-weight: 500;
 }
 
-.section-title {
-  font-size: 24px;
-  font-weight: 400;
-  margin: 0;
-  color: #1E1E1E;
+.tags {
+    display: flex;
+    gap: 8px;
 }
 
-.tags-list {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+.tag {
+    background-color: #333;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
 }
 
-.tag-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  background-color: #2C2C2C; /* Brand Default */
-  padding: 12px 24px;
-  border-radius: 20px;
-  color: #F5F5F5;
-  font-size: 20px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+/* 하단 통계 섹션 */
+.stats-section {
+    margin-top: 40px;
 }
 
-.tag-item:hover {
-  background-color: #444;
+.stats-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 30px;
 }
 
-/* 닫기(X) 아이콘 */
-.close-icon {
-  width: 20px;
-  height: 20px;
-  stroke: #F5F5F5;
-  stroke-width: 3;
-}
-
-/* --- 하단 영역 (미션 진행도) --- */
-.report-bottom-section {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-.progress-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.progress-item {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  width: 100%;
+.stat-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+    gap: 20px;
 }
 
 .mission-name {
-  width: 100px; /* 라벨 고정 너비 */
-  text-align: right;
-  font-size: 16px;
-  font-weight: 500;
-  color: #787A82;
-  flex-shrink: 0;
+    width: 60px;
+    font-size: 0.9rem;
+    color: #888;
 }
 
-.progress-bar-container {
-  flex: 1; /* 남은 공간 모두 차지 */
-  height: 26px;
-  background-color: #EAEBEC;
-  border-radius: 13px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  margin-bottom: 20pt;
+/* 프로그레스 바 디자인 */
+.progress-container {
+    flex-grow: 1;
+    height: 12px;
+    background-color: #f0f0f0; /* 배경 회색 바 */
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
 }
 
-/* 진한 보라색 바 */
-.bar-fill-dark {
-  background-color: #532BD8;
-  height: 100%;
-  border-radius: 13px 0 0 13px; /* 왼쪽만 둥글게 (상황에 따라) */
+.progress-fill {
+    height: 100%;
+    background-color: #6332ed; /* 진한 보라색 (진행 완료) */
+    border-radius: 10px;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
-/* 연한 보라색 바 */
-.bar-fill-light {
-  background-color: #D7CCFB;
-  height: 100%;
-  border-radius: 0 13px 13px 0;
+.progress-shadow {
+    height: 100%;
+    background-color: #d8caff; /* 연한 보라색 (진행 중 또는 그림자) */
+    border-radius: 10px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0.8;
 }
 
-.progress-percent {
-  width: 60px;
-  text-align: right;
-  font-size: 16px;
-  font-weight: 500;
-  color: #787A82;
+.percentage {
+    width: 50px;
+    text-align: right;
+    font-size: 0.9rem;
+    color: #888;
 }
