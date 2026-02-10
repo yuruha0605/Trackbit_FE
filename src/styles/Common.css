@@ -1,0 +1,116 @@
+/* =========================
+   Layout
+========================= */
+.page-center {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 64px 24px;
+}
+
+/* width variations */
+.container-sm {
+  max-width: 600px;
+}
+
+.container-md {
+  max-width: 900px;
+}
+
+.container-lg {
+  max-width: 1200px;
+}
+
+/* =========================
+   Form
+========================= */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-field.full {
+  grid-column: span 2;
+}
+
+.form-field label {
+  font-size: 20px;
+  color: #1e1e1e;
+}
+
+.form-field input {
+  padding: 24px 32px;
+  font-size: 18px;
+  border-radius: 16px;
+  border: 2px solid #d9d9d9;
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: #b3b3b3;
+}
+
+/* =========================
+   Buttons
+========================= */
+.btn {
+  margin-top: 64px;
+  padding: 24px;
+  font-size: 20px;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  margin-top: 20px;
+  padding: 22px 24px;
+  font-size: 20px;
+  border-radius: 16px;
+  background: #2c2c2c;
+  color: #f5f5f5;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-link {
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: #1e1e1e;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* =========================
+   Text / Error
+========================= */
+.required {
+  color: #e53935;
+  margin-left: 4px;
+  font-weight: bold;
+}
+
+.error-text {
+  color: #e53935;
+  font-size: 13px;
+  margin-top: 10px;
+}

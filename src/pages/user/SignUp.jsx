@@ -3,7 +3,6 @@ import { useState } from "react";
 import "./SignUp.css";
 import api from "../../api/axios.js";
 
-
 const FORM_FIELDS = [
   { label: "ID", name: "loginId", type: "text", required: true },
   { label: "Name", name: "name", type: "text", required: true },
@@ -35,34 +34,34 @@ function SignUp() {
     setError("");
 
     try {
-      await api.post("/users/signUp", {
-        loginId: form.loginId,
-        name: form.name,
-        password: form.password,
-        job: form.job,
-        interest: form.interest,
-      });
-
+      await api.post("/users/signUp", form);
       navigate("/signin");
     } catch (err) {
       setError(
         err.response?.data?.message ||
           "회원가입 중 오류가 발생했습니다."
       );
-      console.error("signup error:", err);
     }
   };
 
   return (
-    <div className="register-page">
-      <form className="register-form" onSubmit={handleSubmit}>
+    <div className="page-center">
+      <form
+        className="page-container container-lg"
+        onSubmit={handleSubmit}
+      >
         <p className="required-info">
           <span className="required">*</span> 필수 입력 항목
         </p>
 
         <div className="form-grid">
           {FORM_FIELDS.map(({ label, name, type, required }) => (
-            <div key={name} className="form-field">
+            <div
+              key={name}
+              className={`form-field ${
+                name === "interest" ? "full" : ""
+              }`}
+            >
               <label htmlFor={name}>
                 {label}
                 {required && <span className="required">*</span>}
@@ -81,9 +80,9 @@ function SignUp() {
           ))}
         </div>
 
-        {error && <p className="register-error">{error}</p>}
+        {error && <p className="form-error">{error}</p>}
 
-        <button type="submit" className="submit-btn">
+        <button type="submit" className="btn-primary">
           Register
         </button>
       </form>

@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 
 function UpdateUser() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const [form, setForm] = useState({
     loginId: "",
@@ -17,9 +18,7 @@ function UpdateUser() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const { logout } = useAuth();
 
-  /** 내 정보 조회 */
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -36,8 +35,7 @@ function UpdateUser() {
           job: res.data.job || "",
           interest: res.data.interest || "",
         });
-      } catch (err) {
-        console.error(err);
+      } catch {
         setError("사용자 정보를 불러오지 못했습니다.");
       } finally {
         setLoading(false);
@@ -47,13 +45,11 @@ function UpdateUser() {
     fetchUser();
   }, []);
 
-  /** input 변경 */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  /** 정보 수정 */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -76,13 +72,11 @@ function UpdateUser() {
 
       alert("정보가 수정되었습니다.");
       navigate("/mypage");
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("정보 수정에 실패했습니다.");
     }
   };
 
-  /** 회원 탈퇴 */
   const handleDelete = async () => {
     if (!window.confirm("정말로 회원 탈퇴하시겠습니까?")) return;
 
@@ -95,8 +89,7 @@ function UpdateUser() {
 
       logout();
       navigate("/");
-    } catch (err) {
-      console.error(err);
+    } catch {
       alert("회원 탈퇴에 실패했습니다.");
     }
   };
@@ -105,33 +98,29 @@ function UpdateUser() {
 
   return (
     <div className="update-user">
-      <form className="update-user__form" onSubmit={handleSubmit}>
-        {error && <p className="error">{error}</p>}
+      <form
+        className="page-container container-lg"
+        onSubmit={handleSubmit}
+      >
+        {error && <p className="error-text">{error}</p>}
 
-        <div className="form-row">
-          <div className="form-group">
+        <div className="form-grid">
+          <div className="form-field">
             <label>ID</label>
-            <input
-              type="text"
-              value={form.loginId}
-              disabled
-            />
+            <input value={form.loginId} disabled />
           </div>
 
-          <div className="form-group">
+          <div className="form-field">
             <label>Name</label>
             <input
-              type="text"
               name="name"
               value={form.name}
               onChange={handleChange}
               required
             />
           </div>
-        </div>
 
-        <div className="form-row">
-          <div className="form-group">
+          <div className="form-field">
             <label>Password</label>
             <input
               type="password"
@@ -142,37 +131,35 @@ function UpdateUser() {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-field">
             <label>Job</label>
             <input
-              type="text"
               name="job"
               value={form.job}
               onChange={handleChange}
             />
           </div>
-        </div>
 
-        <div className="form-group full">
-          <label>What are you interest about?</label>
-          <input
-            type="text"
-            name="interest"
-            value={form.interest}
-            onChange={handleChange}
-          />
+          <div className="form-field full">
+            <label>What are you interest about?</label>
+            <input
+              name="interest"
+              value={form.interest}
+              onChange={handleChange}
+            />
+          </div>
         </div>
 
         <div className="button-row">
           <button
             type="button"
-            className="btn danger"
+            className="btn-danger"
             onClick={handleDelete}
           >
             회원 탈퇴
           </button>
 
-          <button type="submit" className="btn primary">
+          <button type="submit" className="btn-primary">
             수정하기
           </button>
         </div>

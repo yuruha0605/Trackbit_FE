@@ -31,52 +31,54 @@ function SignIn() {
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("user", JSON.stringify(userData));
 
-      login(userData); // ⭐ Header 즉시 반영
+      login(userData);
       navigate("/mypage");
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-        "아이디 또는 비밀번호가 올바르지 않습니다."
-      );
+    } catch {
+      setError("아이디 또는 비밀번호가 올바르지 않습니다.");
     }
   };
 
   return (
     <div className="login-page">
-      <form className="login-card" onSubmit={handleSubmit}>
-        <div className="login-field">
+      <form
+        className="login-card page-container container-sm"
+        onSubmit={handleSubmit}
+      >
+        <div className="form-field">
           <label>ID</label>
           <input
-            type="text"
             value={id}
             onChange={(e) => setId(e.target.value)}
-            placeholder="ID"
             required
           />
         </div>
 
-        <div className="login-field">
+        <div className="form-field">
           <label>Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="password"
             required
           />
         </div>
 
-        {error && <p className="login-error">{error}</p>}
-
-        <button type="submit" className="login-btn">
+        {error && <p className="error-text">{error}</p>}
+        
+        <button type="submit" className="btn-primary">
           Sign In
         </button>
-        <button
-          type="button"
-          className="forgot-btn"
-          onClick={() => navigate("/findPassword")}>
-          Forgot password? 
-        </button>
+
+        <div className="forgot-wrapper">
+          <button
+            type="button"
+            className="btn-link"
+            onClick={() => navigate("/findPassword")}
+          >
+            Forgot password?
+          </button>
+        </div>
+
       </form>
     </div>
   );
