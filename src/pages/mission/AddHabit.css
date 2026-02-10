@@ -1,12 +1,9 @@
-
         .add-container {
-          width: 100%;
           min-height: 100vh;
-          max-width: 100%;
           background-color: #ffff;
           display: flex;
           justify-content: center;
-          padding: 40px 380px;
+          padding: 40px 20px;
           box-sizing: border-box;
           flex-direction: column;
           font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
