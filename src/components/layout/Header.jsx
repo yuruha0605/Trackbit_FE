@@ -8,8 +8,8 @@ const NAV_ITEMS = [
   { label: "Calendar", path: "/calendar" },
   { label: "Habit", path: "/habit" },
   { label: "Mission", path: "/mission" },
-  { label: "Review", path: "/review" },
   { label: "Report", path: "/report" },
+  { label: "Review", path: "/review" },
   { label: "Ranking", path: "/rank" },
   { label: "My Page", path: "/mypage" },
 ];

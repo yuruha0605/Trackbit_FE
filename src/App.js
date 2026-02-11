@@ -23,6 +23,7 @@ import RecommendPage from "./pages/mission/RecommendPage";
 import CalendarPage from "./pages/mission/CalendarPage";
 import ReviewPage from "./pages/mission/ReviewPage";
 import RankingPage from "./pages/dashboard/RankingPage";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 function App() {
   return (
@@ -37,23 +38,26 @@ function App() {
             <Route path="/register" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/findPassword" element={<FindPassword />} />
-            <Route path="/resetPassword" element={<ResetPassword />}/>
+            <Route path="/resetPassword" element={<ResetPassword />} />
 
-            <Route path="/mypage" element={<MyPage />}>
-              <Route index element={<UserRecord />} />
-              <Route path="user" element={<UpdateUser />} />
-              <Route path="trophy" element={<MyTrophy />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/mypage" element={<MyPage />}>
+                <Route index element={<UserRecord />} />
+                <Route path="user" element={<UpdateUser />} />
+                <Route path="trophy" element={<MyTrophy />} />
+              </Route>
+
+              <Route path="/habit" element={<HabitAdd />} />
+              <Route path="/mission" element={<Mission />} />
+              <Route path="/report" element={<Report />} />
+
+              <Route path="/recommend" element={<RecommendPage />} />
+              <Route path="/Calendar" element={<CalendarPage />} />
+
+              <Route path="/review" element={<ReviewPage />} />
             </Route>
 
-            <Route path="/habit" element={<HabitAdd />}/>
-            <Route path="/mission" element={<Mission />}/>
-            <Route path="/report" element={<Report />}/>
-
-            <Route path="/recommend" element={<RecommendPage/>}/>
-            <Route path="/Calendar" element={<CalendarPage />}/>
-
-            <Route path="/review" element={<ReviewPage />}/>
-            <Route path="/rank" element={<RankingPage />}/>
+            <Route path="/rank" element={<RankingPage />} />
           </Routes>
         </main>
 
