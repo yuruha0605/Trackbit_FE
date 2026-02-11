@@ -4,6 +4,7 @@ import "./styles/Common.css";
 
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import { AuthProvider } from "./context/AuthContext";
 
 import SignUp from "./pages/user/SignUp";
 import SignIn from "./pages/user/SignIn";
@@ -15,9 +16,6 @@ import UserRecord from "./pages/mypage/UserRecord";
 import FindPassword from "./pages/user/FindPassword";
 import ResetPassword from "./pages/user/ResetPassword";
 
-import { AlertProvider } from "./context/AlertContext";
-import useSseAlert from "./hooks/useSseAlert";
-
 import HabitAdd from "./pages/mission/AddHabit";
 import Mission from "./pages/mission/mission";
 import Report from "./pages/mission/Report";
@@ -25,13 +23,10 @@ import RecommendPage from "./pages/mission/RecommendPage";
 import CalendarPage from "./pages/mission/CalendarPage";
 import ReviewPage from "./pages/mission/ReviewPage";
 import RankingPage from "./pages/dashboard/RankingPage";
-import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
     <AuthProvider>
-    <AlertProvider>
-      <SseListener/>
       <BrowserRouter>
         <Header />
 
@@ -64,14 +59,8 @@ function App() {
 
         <Footer />
       </BrowserRouter>
-    </AlertProvider>
     </AuthProvider>
   );
-}
-
-function SseListener() {
-  useSseAlert();
-  return null;
 }
 
 export default App;
