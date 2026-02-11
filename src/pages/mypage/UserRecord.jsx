@@ -18,14 +18,21 @@ export default function UserRecord() {
       try {
         const res = await api.get("/mypage", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            Authorization: localStorage.getItem("accessToken"),
           },
         });
 
+        const data = res.data;
+
+        // totalTagCounts에서 값이 0 이상인 key만 배열로 추출
+        const topTags = Object.keys(data.totalTagCounts || {}).filter(
+          (key) => data.totalTagCounts[key] > 0
+        );
+
         setRecord({
-          streakDays: res.data.streakDays,
-          completedMissions: res.data.completedMissions,
-          topTags: res.data.topTags || [],
+          streakDays: data.consecutiveSuccessDays || 0,
+          completedMissions: data.completedMissions || 0,
+          topTags,
         });
       } catch (err) {
         console.error("record fetch error:", err);
@@ -74,9 +81,7 @@ export default function UserRecord() {
 
         <div className="tag-list">
           {record.topTags.length > 0 ? (
-            record.topTags.map((tag) => (
-              <Tag key={tag} label={tag} />
-            ))
+            record.topTags.map((tag) => <Tag key={tag} label={tag} />)
           ) : (
             <p className="tag-empty">아직 기록이 없어요</p>
           )}
