@@ -9,11 +9,12 @@ function UpdateUser() {
   const { login, logout } = useAuth();
 
   const [form, setForm] = useState({
-    loginId: "",
-    name: "",
-    password: "",
-    job: "",
-    interest: "",
+    userId: "",
+    userName: "",
+    userPassword: "",
+    userJob: "",
+    userInterest: "",
+    profilePublic: true,
   });
 
   const [loading, setLoading] = useState(true);
@@ -22,18 +23,19 @@ function UpdateUser() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await api.get("/users/me", {
+        const res = await api.get("/user/me", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            Authorization: localStorage.getItem("accessToken"),
           },
         });
 
         setForm({
-          loginId: res.data.loginId,
-          name: res.data.name || "",
-          password: "",
-          job: res.data.job || "",
-          interest: res.data.interest || "",
+          userId: res.data.userId,
+          userName: res.data.userName || "",
+          userPassword: "",
+          userJob: res.data.userJob || "",
+          userInterest: res.data.userInterest || "",
+          profilePublic: res.data.profilePublic ?? true,
         });
       } catch {
         setError("사용자 정보를 불러오지 못했습니다.");
@@ -46,8 +48,12 @@ function UpdateUser() {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -55,28 +61,30 @@ function UpdateUser() {
     setError("");
 
     try {
-      await api.put(
-        "/users/me",
-        {
-          name: form.name,
-          password: form.password || undefined,
-          job: form.job,
-          interest: form.interest,
+      const body = {
+        userName: form.userName,
+        userJob: form.userJob,
+        userInterest: form.userInterest,
+        profilePublic: form.profilePublic,
+      };
+
+      if (form.userPassword) {
+        body.userPassword = form.userPassword;
+      }
+
+      await api.put("/user/me", body, {
+        headers: {
+          Authorization: localStorage.getItem("accessToken"),
         },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      });
 
       const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-
       const updatedUser = {
         ...storedUser,
-        name: form.name,
-        job: form.job,
-        interest: form.interest,
+        userName: form.userName,
+        userJob: form.userJob,
+        userInterest: form.userInterest,
+        profilePublic: form.profilePublic,
       };
 
       localStorage.setItem("user", JSON.stringify(updatedUser));
@@ -84,8 +92,8 @@ function UpdateUser() {
 
       alert("정보가 수정되었습니다.");
       navigate("/mypage");
-    } catch {
-      setError("정보 수정에 실패했습니다.");
+    } catch (err) {
+      setError(err.response?.data?.message || "정보 수정에 실패했습니다.");
     }
   };
 
@@ -93,9 +101,9 @@ function UpdateUser() {
     if (!window.confirm("정말로 회원 탈퇴하시겠습니까?")) return;
 
     try {
-      await api.delete("/users/me", {
+      await api.delete("/user/me", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          Authorization: localStorage.getItem("accessToken"),
         },
       });
 
@@ -121,14 +129,14 @@ function UpdateUser() {
         <div className="form-grid">
           <div className="form-field">
             <label>ID</label>
-            <input value={form.loginId} disabled />
+            <input value={form.userId} disabled />
           </div>
 
           <div className="form-field">
             <label>Name</label>
             <input
-              name="name"
-              value={form.name}
+              name="userName"
+              value={form.userName}
               onChange={handleChange}
               required
             />
@@ -138,8 +146,8 @@ function UpdateUser() {
             <label>Password</label>
             <input
               type="password"
-              name="password"
-              value={form.password}
+              name="userPassword"
+              value={form.userPassword}
               onChange={handleChange}
               placeholder="변경 시에만 입력"
             />
@@ -148,19 +156,31 @@ function UpdateUser() {
           <div className="form-field">
             <label>Job</label>
             <input
-              name="job"
-              value={form.job}
+              name="userJob"
+              value={form.userJob}
               onChange={handleChange}
             />
           </div>
 
           <div className="form-field full">
-            <label>What are you interest about?</label>
+            <label>Interest</label>
             <input
-              name="interest"
-              value={form.interest}
+              name="userInterest"
+              value={form.userInterest}
               onChange={handleChange}
             />
+          </div>
+
+          <div className="form-field full">
+            <label>
+              <input
+                type="checkbox"
+                name="profilePublic"
+                checked={form.profilePublic}
+                onChange={handleChange}
+              />
+              프로필 공개
+            </label>
           </div>
         </div>
 

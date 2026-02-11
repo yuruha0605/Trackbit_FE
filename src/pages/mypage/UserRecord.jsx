@@ -16,7 +16,7 @@ export default function UserRecord() {
   useEffect(() => {
     const fetchUserRecord = async () => {
       try {
-        const res = await api.get("/users/record", {
+        const res = await api.get("/mypage", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },

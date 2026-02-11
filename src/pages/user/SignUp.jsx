@@ -33,13 +33,21 @@ function SignUp() {
     e.preventDefault();
     setError("");
 
+    const requestData = {
+      userId: form.loginId,
+      userPassword: form.password,
+      userName: form.name,
+      userJob: form.job,
+      userInterest: form.interest,
+    };
+
     try {
-      await api.post("/users/signUp", form);
+      await api.post("/user/signup", requestData);
       navigate("/signin");
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "회원가입 중 오류가 발생했습니다."
+        "회원가입 중 오류가 발생했습니다."
       );
     }
   };
@@ -59,9 +67,8 @@ function SignUp() {
           {FORM_FIELDS.map(({ label, name, type, required }) => (
             <div
               key={name}
-              className={`form-field ${
-                name === "interest" ? "full" : ""
-              }`}
+              className={`form-field ${name === "interest" ? "full" : ""
+                }`}
             >
               <label htmlFor={name}>
                 {label}

@@ -30,10 +30,16 @@ function FindPassword() {
     setLoading(true);
 
     try {
-      await api.post("/users/findPassword", {
-        loginId: form.loginId,
-        name: form.name,
-      });
+      await api.post(
+        "/user/find",
+        null,
+        {
+          params: {
+            userId: form.loginId,
+            userName: form.name,
+          },
+        }
+      );
 
       navigate("/resetPassword", {
         state: { loginId: form.loginId },
@@ -41,7 +47,7 @@ function FindPassword() {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "사용자 정보를 확인할 수 없습니다."
+        "사용자 정보를 확인할 수 없습니다."
       );
     } finally {
       setLoading(false);

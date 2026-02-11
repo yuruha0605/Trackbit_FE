@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import "./MyTrophy.css";
 import award from "../../assets/icons/Award.png";
-import api from "../../api/axios.js"
+import api from "../../api/axios.js";
 
 const ITEMS_PER_PAGE = 6;
 
 function MyTrophy() {
-  const [missions, setMissions] = useState([]);
+  const [trophies, setTrophies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -15,16 +15,16 @@ function MyTrophy() {
       try {
         setLoading(true);
 
-        const { data } = await api.get("/api/trophies", {
+        const { data } = await api.get("/trophy/display", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            Authorization: localStorage.getItem("accessToken"),
           },
         });
 
-        setMissions(data);
+        setTrophies(data);
       } catch (err) {
         console.error("트로피 조회 실패:", err);
-        setMissions([]);
+        setTrophies([]);
       } finally {
         setLoading(false);
       }
@@ -33,12 +33,9 @@ function MyTrophy() {
     fetchTrophies();
   }, []);
 
-  if (loading) {
-    return <div className="mytrophy">로딩 중...</div>;
-  }
+  if (loading) return <div className="mytrophy">로딩 중...</div>;
 
-  // 미션 없을 때
-  if (missions.length === 0) {
+  if (trophies.length === 0) {
     return (
       <div className="mytrophy">
         <section className="mytrophy-header">
@@ -56,10 +53,9 @@ function MyTrophy() {
     );
   }
 
-  /** pagination 계산 */
-  const totalPages = Math.ceil(missions.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(trophies.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentMissions = missions.slice(
+  const currentTrophies = trophies.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
@@ -71,22 +67,19 @@ function MyTrophy() {
         <h1 className="mypage-title">완료한 미션</h1>
       </header>
 
-      {/* 미션 카드 */}
       <section className="mission-list">
-        {currentMissions.map((mission) => (
-          <div className="mission-card" key={mission.id}>
+        {currentTrophies.map((trophy) => (
+          <div className="mission-card" key={trophy.trophyId}>
             <img src={award} alt="award" className="mission-icon" />
-
             <div className="mission-content">
-              <h3 className="mission-title">{mission.title}</h3>
+              <h3 className="mission-title">{trophy.trophyName}</h3>
+              <p className="mission-sub">{trophy.habitName}</p>
             </div>
           </div>
         ))}
       </section>
 
-      {/* pagination */}
       <section className="pagination">
-        {/* Previous */}
         <button
           className={`page-btn ${currentPage === 1 ? "disabled" : ""}`}
           disabled={currentPage === 1}
@@ -95,13 +88,11 @@ function MyTrophy() {
           Previous
         </button>
 
-        {/* page numbers */}
         <div className="page-numbers">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
-              className={`page-btn ${page === currentPage ? "active" : ""
-                }`}
+              className={`page-btn ${page === currentPage ? "active" : ""}`}
               onClick={() => setCurrentPage(page)}
             >
               {page}
@@ -109,10 +100,8 @@ function MyTrophy() {
           ))}
         </div>
 
-        {/* Next */}
         <button
-          className={`page-btn ${currentPage === totalPages ? "disabled" : ""
-            }`}
+          className={`page-btn ${currentPage === totalPages ? "disabled" : ""}`}
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage((p) => p + 1)}
         >
