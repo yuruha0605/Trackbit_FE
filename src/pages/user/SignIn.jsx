@@ -1,11 +1,15 @@
 import "./SignIn.css";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../../api/axios.js";
 import { useAuth } from "../../context/AuthContext";
 
 function SignIn() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/"
+
   const { login } = useAuth();
 
   const [id, setId] = useState("");
@@ -32,7 +36,7 @@ function SignIn() {
       localStorage.setItem("user", JSON.stringify(userData));
 
       login(userData);
-      navigate("/mypage");
+      navigate(from, {replace: true});
     } catch {
       setError("아이디 또는 비밀번호가 올바르지 않습니다.");
     }
