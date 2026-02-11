@@ -40,8 +40,8 @@ const HabitAdd = () => {
   };
 
   return (
-    <div className="page-center">
-      <div className="page-container container-lg">
+    <div className="habit">
+      <div className="page-container container-md">
         <div className="dashboard-container">
 
           {/* --- [왼쪽 컬럼: 태그 선택 및 리스트] --- */}
