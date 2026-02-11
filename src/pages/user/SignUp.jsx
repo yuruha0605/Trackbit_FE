@@ -50,6 +50,7 @@ function SignUp() {
         className="page-container container-md"
         onSubmit={handleSubmit}
       >
+        <h2>회원가입</h2>
         <p className="required-info">
           <span className="required">*</span> 필수 입력 항목
         </p>

@@ -44,6 +44,7 @@ function SignIn() {
         className="login-card page-container container-sm"
         onSubmit={handleSubmit}
       >
+        <h2>로그인</h2>
         <div className="form-field">
           <label>ID</label>
           <input
@@ -70,6 +71,14 @@ function SignIn() {
         </button>
 
         <div className="forgot-wrapper">
+          <button
+            type="button"
+            className="btn-link"
+            onClick={() => navigate("/register")}
+          >
+            Register
+          </button>
+          <br/>
           <button
             type="button"
             className="btn-link"
