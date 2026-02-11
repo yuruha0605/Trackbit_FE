@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 
 function UpdateUser() {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { login, logout } = useAuth();
 
   const [form, setForm] = useState({
     loginId: "",
@@ -69,6 +69,18 @@ function UpdateUser() {
           },
         }
       );
+
+      const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+
+      const updatedUser = {
+        ...storedUser,
+        name: form.name,
+        job: form.job,
+        interest: form.interest,
+      };
+
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      login(updatedUser);
 
       alert("정보가 수정되었습니다.");
       navigate("/mypage");

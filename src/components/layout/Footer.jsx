@@ -23,7 +23,7 @@ function Footer() {
       <div className="footer-inner">
 
         <div className="footer-brand">
-          <img src={logo} alt="logo" className="logo-img" />
+          <img src={logo} alt="logo" className="footer-logo" />
           <div className="social-icons">
             <img src={github} alt="github" />
             <img src={figma} alt="figma" />
