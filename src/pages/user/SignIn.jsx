@@ -23,6 +23,9 @@ function SignIn() {
       const response = await api.post("/user/signin", {
         userId,
         userPassword,
+      }, 
+      {
+        headers: { "Content-Type": "application/json" }
       });
 
       const accessToken = response.headers.get("authorization");

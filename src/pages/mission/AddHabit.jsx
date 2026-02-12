@@ -1,139 +1,404 @@
-import { useState } from 'react';
-import './AddHabit.css';
+import { useEffect, useState } from "react";
+import api from "../../api/axios";
+import "./AddHabit.css";
 
 const HabitAdd = () => {
-  // --- [상태 및 데이터 정의] ---
-  const [selectedTag, setSelectedTag] = useState('운동');
+  const accessToken = localStorage.getItem("accessToken");
+  const userId = JSON.parse(localStorage.getItem("user"))?.loginId;
 
-  // 폼 입력을 위한 상태 추가
+  /* =========================
+     상태
+  ========================= */
+
+  const [tags, setTags] = useState([]);
+  const [selectedTag, setSelectedTag] = useState(null);
+  const [habitList, setHabitList] = useState([]);
+  const [recommendedHabits, setRecommendedHabits] = useState([]);
+
   const [formData, setFormData] = useState({
-    name: '',
-    desc: '',
-    tag: '운동'
+    habitId: null,
+    habitName: "",
+    habitDefinition: "",
+    tagId: 0,
+    styleId: 0,
+    startValue: 0,
+    stepValue: 0,
+    targetValue: 0,
+    unit: "",
   });
 
-  const tags = ['음료', '운동', '기타', '습관', '식사', '취미'];
+  const [editing, setEditing] = useState(false);
+  const [joined, setJoined] = useState(false);
 
-  const habits = [
-    { id: 1, name: '습관1', desc: 'Menu description.', shortcut: '⇧A' },
-    { id: 2, name: '습관2', desc: 'Menu description.', shortcut: '⇧A' },
-    { id: 3, name: '습관3', desc: 'Menu description.', shortcut: '⇧A' },
-  ];
+  /* =========================
+     태그 조회
+  ========================= */
 
-  // --- [아이콘 컴포넌트] ---
-  const CloseIcon = () => (
-    <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M13 1L1 13M1 1L13 13" />
-    </svg>
-  );
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const { data } = await api.get("/habit/tag", {
+          headers: { Authorization: accessToken },
+        });
 
-  const StarIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-    </svg>
-  );
+        setTags(data);
+        if (data.length) {
+          setSelectedTag(data[0].tagId);
+          setFormData((prev) => ({ ...prev, tagId: data[0].tagId }));
+        }
+      } catch (err) {
+        console.error("태그 불러오기 실패:", err);
+      }
+    };
 
-  // --- [핸들러] ---
+    fetchTags();
+  }, [accessToken]);
+
+  /* =========================
+     태그별 습관 조회
+  ========================= */
+
+  useEffect(() => {
+    if (!selectedTag) return;
+
+    const fetchHabitList = async () => {
+      try {
+        const { data } = await api.get("/habit/", {
+          headers: { Authorization: accessToken },
+          params: { tagId: selectedTag },
+        });
+
+        setHabitList(
+          (data.habits || []).map((h) => ({
+            ...h,
+            tagId: data.tagId,
+          }))
+        );
+      } catch (err) {
+        console.error("습관 리스트 불러오기 실패:", err);
+        setHabitList([]);
+      }
+    };
+
+    fetchHabitList();
+  }, [selectedTag, accessToken]);
+
+  /* =========================
+     추천 습관
+  ========================= */
+
+  useEffect(() => {
+    const fetchRecommended = async () => {
+      try {
+        const { data } = await api.get("/ai/recommend/habit", {
+          headers: { Authorization: accessToken },
+          params: { userId },
+        });
+
+        setRecommendedHabits(data.recommendedHabits || []);
+      } catch (err) {
+        console.error("추천 습관 불러오기 실패:", err);
+        setRecommendedHabits([]);
+      }
+    };
+
+    fetchRecommended();
+  }, [userId, accessToken]);
+
+  /* =========================
+     핸들러
+  ========================= */
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleTagChange = (tagId) => {
+    setSelectedTag(tagId);
+    setFormData((prev) => ({ ...prev, tagId }));
+  };
+
+  const handleCreateHabit = async (e) => {
+    e.preventDefault();
+    try {
+      const body = {
+        tagId: formData.tagId,
+        styleId: formData.styleId,
+        habitName: formData.habitName,
+        habitDefinition: formData.habitDefinition,
+        startValue: Number(formData.startValue),
+        stepValue: Number(formData.stepValue),
+        targetValue: Number(formData.targetValue),
+        unit: formData.unit,
+      };
+
+      const { data } = await api.post("/habit/create", body, {
+        headers: { Authorization: accessToken },
+      });
+
+      alert(`습관 생성 완료: ${data.message}`);
+      setEditing(false);
+    } catch (err) {
+      console.error("습관 생성 실패:", err);
+      alert("습관 생성 실패");
+    }
+  };
+
+  const handleSelectHabit = (habit) => {
+    setFormData({
+      habitId: habit.habitId,
+      habitName: habit.habitName,
+      habitDefinition: habit.habitDefinition,
+      tagId: habit.tagId,
+      styleId: habit.styleId,
+      startValue: habit.startValue,
+      stepValue: habit.stepValue,
+      targetValue: habit.targetValue,
+      unit: habit.unit,
+    });
+
+    setEditing(true);
+    setJoined(habit.joined);
+  };
+
+  const handleJoinHabit = async () => {
+    if (!formData.habitId) return;
+
+    try {
+      const { data } = await api.post(
+        `/habit/${formData.habitId}/join`,
+        {},
+        { headers: { Authorization: accessToken } }
+      );
+      alert(data.message);
+      setJoined(true);
+    } catch (err) {
+      console.error("참여 실패:", err);
+      alert("참여 실패");
+    }
+  };
+
+  const handleCancelJoin = async () => {
+    if (!formData.habitId) return;
+
+    try {
+      await api.delete(`/habit/${formData.habitId}/join`, {
+        headers: { Authorization: accessToken },
+      });
+      alert("참여 취소 완료");
+      setJoined(false);
+    } catch (err) {
+      console.error("참여 취소 실패:", err);
+      alert("참여 취소 실패");
+    }
+  };
+
+  const handleUpdateHabit = async () => {
+    if (!formData.habitId) return;
+
+    try {
+      await api.patch(
+        `/habit/${formData.habitId}/join`,
+        { status: "미시작" },
+        { headers: { Authorization: accessToken } }
+      );
+      alert("습관 수정 완료");
+    } catch (err) {
+      console.error("습관 수정 실패:", err);
+      alert("습관 수정 실패");
+    }
+  };
+
+  /* =========================
+     JSX
+  ========================= */
+
   return (
-    <div className="habit">
-      <div className="page-container container-md">
-        <div className="dashboard-container">
+    <div className="habit-page">
+      <div className="habit-container">
 
-          {/* --- [왼쪽 컬럼: 태그 선택 및 리스트] --- */}
-          <div className="left-column">
-            {/* 1. 상단 태그 영역 */}
-            <div className="header-section">
-              <h2 className="header-title">추가할 습관을 선택해주세요</h2>
-              <div className="tags-grid">
-                {tags.map((tag) => (
-                  <div
-                    key={tag}
-                    className={`tag-button ${selectedTag === tag ? 'active' : ''}`}
-                    onClick={() => setSelectedTag(tag)}
-                  >
-                    {tag} <CloseIcon />
+        {/* ===== 왼쪽: 추천 + 리스트 ===== */}
+        <div className="habit-card">
+          <h2 className="habit-card-title">추천 습관</h2>
+
+          <div className="habit-list">
+            {recommendedHabits.length ? (
+              recommendedHabits.map((h, i) => (
+                <div
+                  key={i}
+                  className="habit-list-item"
+                  onClick={() => handleSelectHabit(h)}
+                >
+                  <div className="habit-list-top">
+                    <span className="habit-list-name">{h.habitName}</span>
+                    <span className="habit-list-tag">{h.tagName}</span>
                   </div>
-                ))}
-              </div>
-            </div>
 
-            {/* 2. 리스트 카드 영역 */}
-            <div className="list-card">
-              <div className="card-header-text">
-                <span className="card-sub-label">태그에 따른 습관 목록</span>
-                <div className="card-main-label">{selectedTag}</div>
-              </div>
-              <div className="divider"></div>
-              <div className="habit-list">
-                {habits.map((habit) => (
-                  <div key={habit.id} className="habit-item">
-                    <div className="icon-wrapper"><StarIcon /></div>
-                    <div className="habit-info">
-                      <div className="habit-top">
-                        <span className="habit-name">{habit.name}</span>
-                        <span className="shortcut-badge">{habit.shortcut}</span>
-                      </div>
-                      <p className="habit-desc">{habit.desc}</p>
+                  <p className="habit-list-desc">{h.habitDefinition}</p>
+
+                  {h.recommendedMissions?.map((m, j) => (
+                    <div key={j} className="habit-recommended-mission">
+                      <strong>{m.missionName}</strong> : {m.missionDefinition} ({m.levelName})
                     </div>
+                  ))}
+                </div>
+              ))
+            ) : (
+              <p>추천 습관이 없습니다.</p>
+            )}
+          </div>
+
+          <h2 className="habit-card-title" style={{ marginTop: "40px" }}>
+            선택한 태그 습관
+          </h2>
+
+          <div className="habit-list">
+            {habitList.length ? (
+              habitList.map((h) => (
+                <div
+                  key={h.habitId}
+                  className="habit-list-item"
+                  onClick={() => handleSelectHabit(h)}
+                >
+                  <div className="habit-list-top">
+                    <span className="habit-list-name">{h.habitName}</span>
                   </div>
-                ))}
-              </div>
-            </div>
+
+                  <p className="habit-list-desc">{h.habitDefinition}</p>
+                  <span className="habit-list-status">{h.myStatus}</span>
+                </div>
+              ))
+            ) : (
+              <p>선택한 태그에 습관이 없습니다.</p>
+            )}
           </div>
-
-          {/* --- 오른쪽 컬럼: 입력 폼--- */}
-          <div className="right-column">
-            <div className="form-card">
-              <h3 className="form-title">새 습관 만들기</h3>
-
-              <form className="habit-form" onSubmit={(e) => e.preventDefault()}>
-                <div className="form-group">
-                  <label>습관 이름</label>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="예: 물 마시기"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>태그 선택</label>
-                  <select
-                    name="tag"
-                    value={formData.tag}
-                    onChange={handleInputChange}
-                  >
-                    {tags.map(tag => <option key={tag} value={tag}>{tag}</option>)}
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>설명</label>
-                  <textarea
-                    name="desc"
-                    rows="3"
-                    placeholder=""
-                    value={formData.desc}
-                    onChange={handleInputChange}
-                  ></textarea>
-                </div>
-
-                <div className="form-actions">
-                  <button type="button" className="btn-cancel">취소</button>
-                  <button type="submit" className="btn-submit">저장하기</button>
-                </div>
-              </form>
-            </div>
-          </div>
-
         </div>
+
+        {/* ===== 오른쪽: 폼 ===== */}
+        <div className="habit-card">
+          <h2 className="habit-card-title">
+            {editing ? "습관 수정" : "새 습관 만들기"}
+          </h2>
+
+          <form
+            className="habit-form"
+            onSubmit={editing ? (e) => e.preventDefault() : handleCreateHabit}
+          >
+            <div className="habit-form-group">
+              <label>습관 이름</label>
+              <input
+                type="text"
+                name="habitName"
+                value={formData.habitName}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className="habit-form-group">
+              <label>태그 선택</label>
+              <select
+                value={formData.tagId}
+                onChange={(e) => handleTagChange(Number(e.target.value))}
+              >
+                {tags.map((t) => (
+                  <option key={t.tagId} value={t.tagId}>
+                    {t.tagName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="habit-form-group">
+              <label>설명</label>
+              <textarea
+                name="habitDefinition"
+                value={formData.habitDefinition}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div className="habit-form-group">
+              <label>시작값</label>
+              <input
+                type="number"
+                name="startValue"
+                value={formData.startValue}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div className="habit-form-group">
+              <label>단계값</label>
+              <input
+                type="number"
+                name="stepValue"
+                value={formData.stepValue}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div className="habit-form-group">
+              <label>목표값</label>
+              <input
+                type="number"
+                name="targetValue"
+                value={formData.targetValue}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div className="habit-form-group">
+              <label>단위</label>
+              <input
+                type="text"
+                name="unit"
+                value={formData.unit}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div className="habit-form-actions">
+              {!editing && (
+                <button type="submit" className="habit-btn-primary">
+                  습관 생성
+                </button>
+              )}
+
+              {editing && (
+                <>
+                  <button
+                    type="button"
+                    className="habit-btn-primary"
+                    onClick={handleJoinHabit}
+                    disabled={joined}
+                  >
+                    참여
+                  </button>
+
+                  <button
+                    type="button"
+                    className="habit-btn-secondary"
+                    onClick={handleCancelJoin}
+                    disabled={!joined}
+                  >
+                    참여 취소
+                  </button>
+
+                  <button
+                    type="button"
+                    className="habit-btn-primary"
+                    onClick={handleUpdateHabit}
+                  >
+                    수정
+                  </button>
+                </>
+              )}
+            </div>
+          </form>
+        </div>
+
       </div>
     </div>
   );

@@ -1,92 +1,179 @@
-        .page-background {
-          min-height: 100vh;
-          width: 100%;
-          background-color: #f8f9fa;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding: 40px 20px;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-          box-sizing: border-box;
-        }
+/* =========================
+   Global Fix (중요)
+========================= */
 
-        .main-layout {
-          display: flex;
-          gap: 32px;
-          width: 100%;
-          max-width: 1000px;
-          align-items: flex-start;
-        }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-        /* 카드 공통 스타일 */
-        .section-card {
-          background: white;
-          border-radius: 12px;
-          border: 1px solid #f0f0f0;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-          padding: 32px;
-        }
+/* =========================
+   Layout
+========================= */
 
-        .left-section { flex: 1; min-width: 300px; }
-        .right-section { flex: 1.5; min-width: 300px; }
+.page-background {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: #fafafa;
+}
 
-        /* 타이틀 & 헤더 */
-        .section-header { margin-bottom: 24px; }
-        .category-label { color: #999; font-size: 13px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px; }
-        .section-title { font-size: 22px; font-weight: 700; color: #111; margin: 0; }
-        .form-category { color: #888; font-size: 14px; margin-bottom: 24px; display: block; }
+.main-layout {
+  width: 100%;
+  max-width: 1200px;
+  padding: 64px 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
 
-        /* 왼쪽 메뉴 리스트 */
-        .menu-list { list-style: none; padding: 0; margin: 0; }
-        .menu-item {
-          display: grid;
-          grid-template-columns: 24px 1fr;
-          grid-template-areas: "icon label" "icon desc";
-          column-gap: 12px;
-          padding: 12px 8px;
-          cursor: pointer;
-          transition: background-color 0.2s;
-          border-radius: 6px;
-        }
-        .menu-item:hover { background-color: #f7f7f7; }
-        
-        .menu-icon { grid-area: icon; width: 22px; color: #333; margin-top: 2px; }
-        .menu-label { grid-area: label; font-size: 16px; font-weight: 700; color: #333; margin: 0; }
-        .menu-desc { grid-area: desc; font-size: 13px; color: #aaa; margin: 2px 0 0 0; }
-        
-        .menu-separator { height: 1px; background: #eee; margin: 12px 0; list-style: none; }
+/* =========================
+   Section Card
+========================= */
 
-        /* 오른쪽 폼 스타일 */
-        .form-box { display: flex; flex-direction: column; gap: 24px; }
-        .field-group { display: flex; flex-direction: column; gap: 8px; }
-        .field-label { font-size: 15px; font-weight: 600; color: #333; }
-        
-        .field-input {
-          width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px;
-          font-size: 15px; outline: none; box-sizing: border-box; background: white;
-          transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .field-input:focus { border-color: #888; box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
-        .field-textarea { resize: none; font-family: inherit; }
+.section-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 48px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0; /* grid overflow 방지 핵심 */
+}
 
-        /* 셀렉트 박스 화살표 */
-        .select-wrapper { position: relative; }
-        .field-select { appearance: none; color: #666; cursor: pointer; }
-        .select-arrow { 
-          position: absolute; right: 16px; top: 50%; transform: translateY(-50%); 
-          pointer-events: none; font-size: 10px; color: #888; 
-        }
+.section-card h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1e1e1e;
+  margin-bottom: 24px;
+}
 
-        /* 버튼 */
-        .btn-group { margin-top: 8px; }
-        .btn { 
-          width: 100%; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; 
-          cursor: pointer; border: none; transition: background-color 0.2s; 
-        }
-        .btn-primary { background: #222; color: white; }
-        .btn-primary:hover { background: #000; }
-        /* 반응형 처리 */
-        @media (max-width: 850px) {
-          .main-layout { flex-direction: column; }
-          .page-background { padding: 20px; }
-        }
+/* =========================
+   Mission Card
+========================= */
+
+.mission-item {
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #ececec;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.mission-item:hover {
+  background: #f9f9f9;
+}
+
+.mission-item h4 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #1e1e1e;
+}
+
+.mission-item p {
+  font-size: 15px;
+  color: #757575;
+  margin-bottom: 8px;
+}
+
+.mission-item small {
+  font-size: 13px;
+  color: #999;
+}
+
+/* 추천 미션 강조 */
+.mission-item.recommended {
+  background: #f5f5f5;
+  border: 1px solid #dedede;
+}
+
+/* =========================
+   Form Inputs
+========================= */
+
+.section-card input,
+.section-card select,
+.section-card textarea {
+  width: 100%;
+  max-width: 100%;
+  padding: 18px 20px;
+  font-size: 16px;
+  border-radius: 16px;
+  border: 2px solid #d9d9d9;
+  outline: none;
+  margin-bottom: 16px;
+  transition: border 0.2s ease;
+  background: #ffffff;
+}
+
+.section-card input:focus,
+.section-card select:focus,
+.section-card textarea:focus {
+  border: 2px solid #2c2c2c;
+}
+
+.section-card textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* =========================
+   Buttons
+========================= */
+
+.section-card button {
+  padding: 14px 18px;
+  font-size: 15px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background: #2c2c2c;
+  color: #ffffff;
+  transition: opacity 0.2s ease;
+  margin-right: 8px;
+  margin-top: 8px;
+}
+
+.section-card button:hover {
+  opacity: 0.85;
+}
+
+/* 수정/삭제 버튼 구분 */
+.mission-item button {
+  font-size: 13px;
+  padding: 8px 12px;
+  margin-right: 6px;
+}
+
+.mission-item button:last-child {
+  background: #757575;
+}
+
+/* =========================
+   Divider
+========================= */
+
+.section-card hr {
+  margin: 28px 0;
+  border: none;
+  height: 1px;
+  background: #ececec;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 900px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .section-card {
+    padding: 32px;
+  }
+}

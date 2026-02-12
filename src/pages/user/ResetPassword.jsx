@@ -27,6 +27,9 @@ function ResetPassword() {
       await api.post("/user/resetPassword", {
         userId: form.loginId,
         newPassword: form.newPassword,
+      },
+      {
+        headers: { "Content-Type": "application/json" }
       });
 
       alert("비밀번호가 변경되었습니다. 다시 로그인해주세요.");
@@ -34,7 +37,7 @@ function ResetPassword() {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "비밀번호 변경에 실패했습니다."
+        "비밀번호 변경에 실패했습니다."
       );
     } finally {
       setLoading(false);

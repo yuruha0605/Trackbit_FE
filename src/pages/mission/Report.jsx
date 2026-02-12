@@ -1,54 +1,94 @@
+import { useEffect, useState } from "react";
 import './Report.css';
+import api from "../../api/axios.js";
 
 const Report = () => {
-  // 미션 데이터 배열
-  const missionData = [
-    { id: 1, name: '미션명', percent: 3.3, fillWidth: '10%', shadowWidth: '15%' },
-    { id: 2, name: '미션명', percent: 15.2, fillWidth: '15%', shadowWidth: '35%' },
-    { id: 3, name: '미션명', percent: 33.5, fillWidth: '50%', shadowWidth: '75%' },
-  ];
+  const [month, setMonth] = useState(""); // YYYY-MM 형식 입력
+  const [monthTagCounts, setMonthTagCounts] = useState({});
+  const [habitProgressList, setHabitProgressList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const fetchReport = async () => {
+    if (!month) return;
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await api.get("/report", {
+        params: { month },
+        headers: { Authorization: localStorage.getItem("accessToken") }
+      });
+
+      setMonthTagCounts(res.data.monthTagCounts || {});
+      setHabitProgressList(res.data.habitProgressList || []);
+    } catch (err) {
+      console.error("리포트 조회 실패:", err);
+      setError("리포트를 불러오지 못했습니다.");
+      setMonthTagCounts({});
+      setHabitProgressList([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="report-container">
-      {/* 상단 섹션 */}
+      {/* 월 선택 폼 */}
       <div className="header-section">
-        <div className="title-box">
-          이번 달의 미션 결과입니다
+        <div className="title-box">이번 달의 미션 결과입니다</div>
+
+        <div className="month-form">
+          <input
+            type="month"
+            value={month}
+            onChange={(e) => setMonth(e.target.value)}
+          />
+          <button type="button" onClick={fetchReport}>조회</button>
         </div>
+
         <div className="tag-container">
           <div className="tag-title">이런 카테고리의 미션을 많이 진행했어요</div>
           <div className="tags">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="tag">
-                Tag <span>✕</span>
-              </div>
-            ))}
+            {Object.keys(monthTagCounts).length > 0 ? (
+              Object.entries(monthTagCounts).map(([tag, count]) => (
+                <div key={tag} className="tag">
+                  {tag} ({count})
+                </div>
+              ))
+            ) : (
+              <div className="tag-empty">아직 기록이 없어요</div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* 하단 섹션 */}
+      {/* 미션 진행률 섹션 */}
       <div className="stats-section">
         <div className="stats-title">이번 달에는 미션을 이만큼 진행했어요</div>
-        
-        {missionData.map((mission) => (
-          <div key={mission.id} className="stat-row">
-            <span className="mission-name">{mission.name}</span>
-            <div className="progress-container">
-              {/* 연한 보라색 배경 바 */}
-              <div 
-                className="progress-shadow" 
-                style={{ width: mission.shadowWidth }}
-              ></div>
-              {/* 진한 보라색 실제 진행 바 */}
-              <div 
-                className="progress-fill" 
-                style={{ width: mission.fillWidth }}
-              ></div>
+
+        {loading && <p>불러오는 중...</p>}
+        {error && <p className="error-text">{error}</p>}
+
+        {!loading && habitProgressList.length === 0 && !error && (
+          <p>이번 달 진행된 미션이 없습니다.</p>
+        )}
+
+        {habitProgressList.map((mission) => {
+          const fillWidth = `${mission.progress}%`;
+          const shadowWidth = `${Math.min(mission.progress + 20, 100)}%`;
+
+          return (
+            <div key={mission.habitId} className="stat-row">
+              <span className="mission-name">{mission.habitName}</span>
+              <div className="progress-container">
+                <div className="progress-shadow" style={{ width: shadowWidth }}></div>
+                <div className="progress-fill" style={{ width: fillWidth }}></div>
+              </div>
+              <span className="percentage">{mission.progress}%</span>
             </div>
-            <span className="percentage">{mission.percent}%</span>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
