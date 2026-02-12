@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { User, Send } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 
 const ReviewPage = () => {
   const [reviews, setReviews] = useState([]);
   const [inputText, setInputText] = useState('');
+  const [searchParams] = useSearchParams();
   
   const token = localStorage.getItem('accessToken') || '';
-  const missionId = 1; 
+  const missionId = searchParams.get('id') || 1;
 
   // 댓글 목록 불러오기
   const fetchReviews = async () => {
