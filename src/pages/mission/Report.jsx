@@ -15,7 +15,7 @@ const Report = () => {
     setError("");
 
     try {
-      const res = await api.get("/report", {
+      const res = await api.get("/mypage/report", {
         params: { month },
         headers: { Authorization: localStorage.getItem("accessToken") }
       });
