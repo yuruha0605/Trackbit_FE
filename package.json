@@ -8,13 +8,20 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.13.4",
+<<<<<<< HEAD
+=======
+    "date-fns": "^4.1.0",
+>>>>>>> addb9fef893657321f37d585958a07a7570f68e1
     "lucide-react": "^0.563.0",
     "react": "^19.2.4",
     "react-calendar": "^6.0.0",
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.0",
     "react-scripts": "5.0.1",
+<<<<<<< HEAD
     "rechart": "^0.0.1",
+=======
+>>>>>>> addb9fef893657321f37d585958a07a7570f68e1
     "recharts": "^3.7.0",
     "web-vitals": "^2.1.4"
   },

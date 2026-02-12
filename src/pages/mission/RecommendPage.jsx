@@ -2,35 +2,41 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Sparkles, Brain, CheckCircle } from 'lucide-react';
 
+
+
 const RecommendPage = () => {
+
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
-  // ★ 1. 토큰 가져오기
   const token = localStorage.getItem('token') || '';
-  const habitId = 1; // (예시 ID)
+  const habitId = 1; 
 
   const handleAnalysis = async () => {
+
     if (!token) {
         alert("로그인이 필요합니다.");
         return;
     }
+
     setLoading(true);
+
     try {
-        // ★ 2. 헤더에 토큰 추가
+
         const response = await axios.get(`http://localhost:8888/ai/recommend/mission`, {
             params: { habitId: habitId },
             headers: { Authorization: `Bearer ${token}` } 
         });
 
         const recommendations = response.data.missions || [];
-        
+
         if (recommendations.length > 0) {
             setResult({
                 habit: recommendations[0].missionName,
                 reason: recommendations[0].missionDefinition || "AI 분석 기반 추천",
                 period: recommendations[0].levelName || "Level 1"
             });
+
         } else {
             alert("추천할 미션이 없습니다.");
         }
@@ -41,9 +47,9 @@ const RecommendPage = () => {
     } finally {
         setLoading(false);
     }
+
   };
 
-  // ... (아래 스타일 및 UI 코드는 기존과 동일)
   const styles = {
     container: { padding: '40px', maxWidth: '600px', margin: '0 auto', fontFamily: 'sans-serif', textAlign: 'center' },
     title: { fontSize: '28px', fontWeight: 'bold', marginBottom: '10px' },
@@ -54,14 +60,16 @@ const RecommendPage = () => {
     tag: { display: 'inline-block', padding: '8px 16px', borderRadius: '20px', border: '1px solid #ddd', marginRight: '10px', marginBottom: '10px', cursor: 'pointer' }
   };
 
+
+
   return (
+
     <div style={styles.container}>
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
         <Sparkles size={48} color="#FFD700" />
       </div>
       <h1 style={styles.title}>AI 습관 추천</h1>
       <p style={styles.subtitle}>데이터를 기반으로 당신에게 딱 맞는 습관을 찾아드려요.</p>
-
       <div style={styles.card}>
         {!result ? (
             <>
@@ -78,14 +86,11 @@ const RecommendPage = () => {
             <div className="animate-fade-in">
                 <CheckCircle size={48} color="#4CAF50" style={{ margin: '0 auto 20px' }} />
                 <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>분석 완료!</h2>
-                
                 <div style={styles.resultBox}>
                     <p style={{ fontSize: '14px', color: '#888', marginBottom: '5px' }}>추천 미션</p>
                     <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '15px', color: '#3b82f6' }}>{result.habit}</h3>
-                    
                     <p style={{ fontSize: '14px', color: '#888', marginBottom: '5px' }}>설명</p>
                     <p style={{ lineHeight: '1.5', color: '#333', marginBottom: '15px' }}>{result.reason}</p>
-
                     <div style={{ background: '#333', color: 'white', padding: '5px 10px', borderRadius: '4px', display: 'inline-block', fontSize: '12px' }}>
                         {result.period}
                     </div>
@@ -101,3 +106,4 @@ const RecommendPage = () => {
 };
 
 export default RecommendPage;
+

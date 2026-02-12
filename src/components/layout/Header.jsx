@@ -5,13 +5,13 @@ import { useAuth } from "../../context/AuthContext";
 
 const NAV_ITEMS = [
   { label: "Home", path: "/" },
-  { label: "Calendar", path: "/calendar" },
-  { label: "Habit", path: "/habit" },
-  { label: "Mission", path: "/mission" },
-  { label: "Report", path: "/report" },
-  { label: "Review", path: "/review" },
-  { label: "Ranking", path: "/rank" },
+  { label: "Calendar", path: "/calendar" }, // 캘린더 연결
+  { label: "Mission", path: "/mission" },   // 미션 연결
+  { label: "Review", path: "/review" },     // 후기 연결
+  { label: "Report", path: "/mypage" },     // 리포트는 마이페이지 안에 있어서 거기로 연결
+  { label: "Ranking", path: "/ranking" },   // 랭킹 연결
   { label: "My Page", path: "/mypage" },
+  { label: "AI Pick", path: "/recommend" },
 ];
 
 function Header() {
