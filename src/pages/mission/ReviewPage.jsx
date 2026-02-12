@@ -39,6 +39,7 @@ const ReviewPage = () => {
     try {
        
         await axios.post(`http://localhost:8888/comments/mission/${missionId}/comments/create`, {
+            missionId: missionId,
             title: "미션 후기", 
             content: inputText
         }, {

@@ -4,6 +4,14 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; 
 import { CheckSquare, Square, Bot } from 'lucide-react';
 
+
+const formatLocalDate = (dateObj) => {
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const CalendarPage = () => {
   const [date, setDate] = useState(new Date());
   const [missions, setMissions] = useState([]); 
@@ -77,7 +85,7 @@ const CalendarPage = () => {
     try {
         await axios.post('http://localhost:8888/mission-logs/check', {
             missionId: missionId,
-            checkDate: date.toISOString().split('T')[0],
+            checkDate: formatLocalDate(date),
             isChecked: newStatus
         }, {
             headers: { Authorization: token }
@@ -126,7 +134,7 @@ const CalendarPage = () => {
             value={date}
             formatDay={(locale, date) => date.getDate()}
             tileContent={({ date }) => {
-              const dateStr = date.toISOString().split('T')[0];
+              const dateStr = formatLocalDate(date);
               if (completedDates.includes(dateStr)) {
                   return <div style={{ width: '6px', height: '6px', background: '#333', borderRadius: '50%', margin: '5px auto' }}></div>;
               }
