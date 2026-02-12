@@ -14,13 +14,14 @@ const HabitAdd = () => {
   const [selectedTag, setSelectedTag] = useState(null);
   const [habitList, setHabitList] = useState([]);
   const [recommendedHabits, setRecommendedHabits] = useState([]);
+  const [mode, setMode] = useState("create");
 
   const [formData, setFormData] = useState({
     habitId: null,
     habitName: "",
     habitDefinition: "",
     tagId: 0,
-    styleId: 0,
+    styleId: 1, // ✅ 기본 반복형
     startValue: 0,
     stepValue: 0,
     targetValue: 0,
@@ -42,16 +43,20 @@ const HabitAdd = () => {
         });
 
         setTags(data);
+
         if (data.length) {
           setSelectedTag(data[0].tagId);
-          setFormData((prev) => ({ ...prev, tagId: data[0].tagId }));
+          setFormData((prev) => ({
+            ...prev,
+            tagId: data[0].tagId,
+          }));
         }
       } catch (err) {
         console.error("태그 불러오기 실패:", err);
       }
     };
 
-    fetchTags();
+    if (accessToken) fetchTags();
   }, [accessToken]);
 
   /* =========================
@@ -90,6 +95,8 @@ const HabitAdd = () => {
   useEffect(() => {
     const fetchRecommended = async () => {
       try {
+        if (!userId) return;
+
         const { data } = await api.get("/ai/recommend/habit", {
           headers: { Authorization: accessToken },
           params: { userId },
@@ -111,27 +118,44 @@ const HabitAdd = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name.includes("Value") ? Number(value) : value,
+    }));
   };
 
   const handleTagChange = (tagId) => {
     setSelectedTag(tagId);
-    setFormData((prev) => ({ ...prev, tagId }));
+    setFormData((prev) => ({
+      ...prev,
+      tagId,
+    }));
+  };
+
+  const handleStyleChange = (styleId) => {
+    setFormData((prev) => ({
+      ...prev,
+      styleId: Number(styleId),
+    }));
   };
 
   const handleCreateHabit = async (e) => {
     e.preventDefault();
+
     try {
       const body = {
         tagId: formData.tagId,
         styleId: formData.styleId,
         habitName: formData.habitName,
         habitDefinition: formData.habitDefinition,
-        startValue: Number(formData.startValue),
-        stepValue: Number(formData.stepValue),
-        targetValue: Number(formData.targetValue),
+        startValue: formData.startValue,
+        stepValue: formData.styleId === 2 ? formData.stepValue : 0,
+        targetValue: formData.targetValue,
         unit: formData.unit,
       };
+
+      console.log("생성 요청:", body);
 
       const { data } = await api.post("/habit/create", body, {
         headers: { Authorization: accessToken },
@@ -140,17 +164,35 @@ const HabitAdd = () => {
       alert(`습관 생성 완료: ${data.message}`);
       setEditing(false);
     } catch (err) {
-      console.error("습관 생성 실패:", err);
+      console.error("습관 생성 실패:", err.response?.data || err);
       alert("습관 생성 실패");
     }
   };
+
+  const handleSelectRecommended = (habit) => {
+    setFormData({
+      habitId: null,
+      habitName: habit.habitName,
+      habitDefinition: habit.habitDefinition,
+      tagId: selectedTag,
+      styleId: habit.styleId || 1,
+      startValue: habit.startValue || 0,
+      stepValue: habit.stepValue || 0,
+      targetValue: habit.targetValue || 0,
+      unit: habit.unit || "",
+    });
+
+    setJoined(false);
+    setEditing(false);
+  };
+
 
   const handleSelectHabit = (habit) => {
     setFormData({
       habitId: habit.habitId,
       habitName: habit.habitName,
       habitDefinition: habit.habitDefinition,
-      tagId: habit.tagId,
+      tagId: selectedTag,
       styleId: habit.styleId,
       startValue: habit.startValue,
       stepValue: habit.stepValue,
@@ -158,9 +200,10 @@ const HabitAdd = () => {
       unit: habit.unit,
     });
 
-    setEditing(true);
     setJoined(habit.joined);
+    setEditing(true);
   };
+
 
   const handleJoinHabit = async () => {
     if (!formData.habitId) return;
@@ -218,40 +261,29 @@ const HabitAdd = () => {
     <div className="habit-page">
       <div className="habit-container">
 
-        {/* ===== 왼쪽: 추천 + 리스트 ===== */}
+        {/* ===== 왼쪽 ===== */}
         <div className="habit-card">
           <h2 className="habit-card-title">추천 습관</h2>
-
           <div className="habit-list">
             {recommendedHabits.length ? (
               recommendedHabits.map((h, i) => (
                 <div
                   key={i}
                   className="habit-list-item"
-                  onClick={() => handleSelectHabit(h)}
+                  onClick={() => handleSelectRecommended(h)}
                 >
                   <div className="habit-list-top">
                     <span className="habit-list-name">{h.habitName}</span>
                     <span className="habit-list-tag">{h.tagName}</span>
                   </div>
-
                   <p className="habit-list-desc">{h.habitDefinition}</p>
-
-                  {h.recommendedMissions?.map((m, j) => (
-                    <div key={j} className="habit-recommended-mission">
-                      <strong>{m.missionName}</strong> : {m.missionDefinition} ({m.levelName})
-                    </div>
-                  ))}
                 </div>
               ))
             ) : (
               <p>추천 습관이 없습니다.</p>
             )}
           </div>
-
-          <h2 className="habit-card-title" style={{ marginTop: "40px" }}>
-            선택한 태그 습관
-          </h2>
+          <h3 className="habit-sub-title">선택된 태그의 습관</h3>
 
           <div className="habit-list">
             {habitList.length ? (
@@ -263,28 +295,39 @@ const HabitAdd = () => {
                 >
                   <div className="habit-list-top">
                     <span className="habit-list-name">{h.habitName}</span>
+                    {h.joined && (
+                      <span className="habit-joined-badge">참여중</span>
+                    )}
                   </div>
 
                   <p className="habit-list-desc">{h.habitDefinition}</p>
-                  <span className="habit-list-status">{h.myStatus}</span>
+
+                  <div className="habit-meta">
+                    <span>목표: {h.targetValue}</span>
+                    <br/>
+                    <span>유형: {h.styleId === 1 ? "반복형" : "발전형"}</span>
+                    <br/>
+                    <span>상태: {h.myStatus}</span>
+                  </div>
                 </div>
               ))
             ) : (
-              <p>선택한 태그에 습관이 없습니다.</p>
+              <p>해당 태그에 습관이 없습니다.</p>
             )}
           </div>
         </div>
 
-        {/* ===== 오른쪽: 폼 ===== */}
+        {/* ===== 오른쪽 ===== */}
         <div className="habit-card">
           <h2 className="habit-card-title">
-            {editing ? "습관 수정" : "새 습관 만들기"}
+            {editing ? "습관 수정/참여" : "새 습관 만들기"}
           </h2>
 
           <form
             className="habit-form"
             onSubmit={editing ? (e) => e.preventDefault() : handleCreateHabit}
           >
+
             <div className="habit-form-group">
               <label>습관 이름</label>
               <input
@@ -300,13 +343,28 @@ const HabitAdd = () => {
               <label>태그 선택</label>
               <select
                 value={formData.tagId}
-                onChange={(e) => handleTagChange(Number(e.target.value))}
+                onChange={(e) =>
+                  handleTagChange(Number(e.target.value))
+                }
               >
                 {tags.map((t) => (
                   <option key={t.tagId} value={t.tagId}>
                     {t.tagName}
                   </option>
                 ))}
+              </select>
+            </div>
+
+            <div className="habit-form-group">
+              <label>습관 유형</label>
+              <select
+                value={formData.styleId}
+                onChange={(e) =>
+                  handleStyleChange(e.target.value)
+                }
+              >
+                <option value={1}>반복형</option>
+                <option value={2}>발전형</option>
               </select>
             </div>
 
@@ -329,15 +387,17 @@ const HabitAdd = () => {
               />
             </div>
 
-            <div className="habit-form-group">
-              <label>단계값</label>
-              <input
-                type="number"
-                name="stepValue"
-                value={formData.stepValue}
-                onChange={handleInputChange}
-              />
-            </div>
+            {formData.styleId === 2 && (
+              <div className="habit-form-group">
+                <label>단계값</label>
+                <input
+                  type="number"
+                  name="stepValue"
+                  value={formData.stepValue}
+                  onChange={handleInputChange}
+                />
+              </div>
+            )}
 
             <div className="habit-form-group">
               <label>목표값</label>
@@ -396,6 +456,7 @@ const HabitAdd = () => {
                 </>
               )}
             </div>
+
           </form>
         </div>
 
