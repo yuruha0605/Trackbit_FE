@@ -1,33 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { User, Send } from 'lucide-react';
 
 const ReviewPage = () => {
-  // 댓글 데이터 상태 관리
-  const [reviews, setReviews] = useState([
-    { id: 1, user: '홍길동', content: '오늘 운동 진짜 힘들었다...', time: '10분 전' },
-    { id: 2, user: '김공감', content: '오 고생하셨어요! 👍', time: '방금 전' },
-  ]);
+  const [reviews, setReviews] = useState([]);
   const [inputText, setInputText] = useState('');
+  
+  // ★ 1. 토큰 가져오기
+  const token = localStorage.getItem('token') || '';
+  const missionId = 1; 
 
-  // 댓글 등록 함수
-  const handleAddReview = () => {
-    if (!inputText.trim()) return; // 빈칸이면 실행 X
-    const newReview = {
-      id: reviews.length + 1,
-      user: '본인', // 현재 로그인한 유저라고 가정
-      content: inputText,
-      time: '방금 전'
-    };
-    setReviews([...reviews, newReview]); // 목록에 추가
-    setInputText(''); // 입력창 비우기
+  // 댓글 목록 불러오기
+  const fetchReviews = async () => {
+    if (!token) return;
+    try {
+        // ★ 2. 헤더에 토큰 추가
+        const res = await axios.get(`http://localhost:8888/comments/mission/${missionId}/comment`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        setReviews(res.data || []);
+    } catch (error) {
+        console.error("댓글 로딩 실패", error);
+    }
   };
 
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  // 댓글 등록 함수
+  const handleAddReview = async () => {
+    if (!inputText.trim()) return;
+    if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+    }
+
+    try {
+        // ★ 3. 헤더에 토큰 추가 (POST)
+        await axios.post(`http://localhost:8888/comments/mission/${missionId}/comments/create`, {
+            title: "미션 후기", 
+            content: inputText
+        }, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        setInputText('');
+        fetchReviews();
+        
+    } catch (error) {
+        console.error("댓글 작성 실패", error);
+        alert("댓글 저장 실패");
+    }
+  };
+
+  // ... (스타일은 아까 화면 안 찌그러지게 수정한 버전 그대로 유지)
   const styles = {
     container: { padding: '40px', maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '40px', height: '80vh', fontFamily: 'sans-serif' },
-    leftCard: { flex: 1, backgroundColor: 'white', borderRadius: '20px', border: '1px solid #e5e7eb', padding: '30px', display: 'flex', flexDirection: 'column', gap: '20px' },
+    leftCard: { width: '400px', minWidth: '400px', backgroundColor: 'white', borderRadius: '20px', border: '1px solid #e5e7eb', padding: '30px', display: 'flex', flexDirection: 'column', gap: '20px' },
     rightCard: { flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' },
-    imageBox: { width: '100%', height: '300px', backgroundColor: '#f3f4f6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa', fontSize: '20px' },
-    missionInfo: { padding: '20px', backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #eee' },
+    imageBox: { width: '100%', height: '350px', backgroundColor: '#f3f4f6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa', fontSize: '20px' },
     reviewList: { flex: 1, overflowY: 'auto', paddingRight: '10px' },
     reviewItem: { backgroundColor: 'white', padding: '20px', borderRadius: '16px', marginBottom: '15px', border: '1px solid #f0f0f0' },
     inputArea: { backgroundColor: 'white', padding: '15px', borderRadius: '16px', border: '1px solid #ddd', display: 'flex', alignItems: 'center', gap: '10px' },
@@ -37,40 +69,31 @@ const ReviewPage = () => {
 
   return (
     <div style={styles.container}>
-      {/* 왼쪽: 미션 인증샷 및 정보 */}
       <div style={styles.leftCard}>
-        <div style={styles.imageBox}>
-          이미지 영역 (455x540)
-        </div>
+        <div style={styles.imageBox}>미션 인증샷 영역</div>
         <div>
-          <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '10px' }}>미션명: 오운완!</h2>
-          <p style={{ fontSize: '18px', color: '#666' }}>2026년 2월 9일에 완료한 미션입니다.</p>
-          <p style={{ marginTop: '15px', lineHeight: '1.6', color: '#444' }}>
-            오늘 하체 운동을 했는데 다리가 너무 아프네요. 그래도 뿌듯합니다!
-          </p>
+          <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '10px' }}>미션 ID: {missionId}</h2>
+          <p style={{ fontSize: '18px', color: '#666' }}>오늘의 미션 완료!</p>
         </div>
       </div>
 
-      {/* 오른쪽: 후기(댓글) 목록 & 입력창 */}
       <div style={styles.rightCard}>
         <h3 style={{ fontSize: '24px', fontWeight: 'bold' }}>습관 공유 ({reviews.length})</h3>
         
         <div style={styles.reviewList}>
-          {reviews.map((review) => (
-            <div key={review.id} style={styles.reviewItem}>
+          {reviews.length > 0 ? reviews.map((review) => (
+            <div key={review.commentId || review.id} style={styles.reviewItem}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
                 <div style={{ width: '32px', height: '32px', background: '#eee', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <User size={16} />
                 </div>
-                <span style={{ fontWeight: 'bold' }}>{review.user}</span>
-                <span style={{ fontSize: '12px', color: '#888' }}>{review.time}</span>
+                <span style={{ fontWeight: 'bold' }}>{review.userId || '익명'}</span>
               </div>
               <p style={{ color: '#333', fontSize: '16px' }}>{review.content}</p>
             </div>
-          ))}
+          )) : <p style={{color:'#999'}}>아직 작성된 후기가 없습니다.</p>}
         </div>
 
-        {/* 댓글 입력창 */}
         <div style={styles.inputArea}>
           <input 
             type="text" 
