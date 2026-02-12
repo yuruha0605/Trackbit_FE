@@ -9,7 +9,7 @@ const RankingPage = () => {
   ];
 
   const styles = {
-    container: { padding: '30px', width: "100%", maxWidth: '900px', margin: '0 auto', fontFamily: 'sans-serif' },
+    container: { padding: '30px', maxWidth: '900px', margin: '0 auto', fontFamily: 'sans-serif' },
     header: { fontSize: '26px', fontWeight: 'bold', marginBottom: '25px', color: '#1e293b' },
     statsGrid: { display: 'flex', gap: '15px', marginBottom: '30px' },
     statCard: { flex: 1, padding: '25px', borderRadius: '20px', color: 'white', textAlign: 'center', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' },

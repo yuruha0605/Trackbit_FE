@@ -1,34 +1,107 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; 
-import { CheckSquare, Square, MessageCircle, Bot } from 'lucide-react';
+import { CheckSquare, Square, Bot } from 'lucide-react';
 
 const CalendarPage = () => {
   const [date, setDate] = useState(new Date());
-  
-  // 미션 상태 관리 (체크 여부 포함)
-  const [missions, setMissions] = useState([
-    { id: 1, title: '아침 7시 기상하기', desc: '레벨1: 3일 연속 도전 중 (2일차)', completed: true },
-    { id: 2, title: '물 2L 마시기', desc: '레벨2: 일주일 도전 중 (5일차)', completed: false },
-  ]);
+  const [missions, setMissions] = useState([]); 
+  const [completedDates, setCompletedDates] = useState([]); 
+  const [loading, setLoading] = useState(true);
 
-  // 진행률 계산 로직
-  const total = missions.length;
-  const completedCount = missions.filter(m => m.completed).length;
-  const progress = Math.round((completedCount / total) * 100);
+  const token = localStorage.getItem('accessToken') || ''; 
 
-  // 🤖 AI 응원 메시지 (상태에 따라 멘트 변경)
-  const getAiMessage = () => {
-    if (progress === 0) return "시작이 반입니다! 오늘도 힘차게 출발해볼까요? 💪";
-    if (progress < 100) return "잘하고 있어요! 남은 미션도 완료해서 퍼펙트 데이를 만들어봐요! 🔥";
-    return "완벽해요! 오늘의 목표를 모두 달성하셨군요. 내일도 이 기세로! 🎉";
+  // 1. 초기 데이터 로드
+  useEffect(() => {
+    if (token) {
+        fetchMyData();
+    } else {
+        console.warn("로그인 토큰이 없습니다. 로그인해주세요.");
+        setLoading(false);
+    }
+  }, [date]); 
+
+  const fetchMyData = async () => {
+    setLoading(true);
+    try {
+      
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      
+      const monthParam = `${year}-${month}`;
+      const dateParam = `${year}-${month}-${day}`;
+
+      // [1] 달력 데이터
+      try {
+        const logResponse = await axios.get(
+            `http://localhost:8888/mission-logs/calendar?month=${monthParam}`,
+            {
+                headers: { Authorization: token } 
+            }
+        );
+        const dates = logResponse.data.activeDates || logResponse.data || [];
+        setCompletedDates(dates);
+      } catch (err) {
+        console.warn("달력 데이터 로딩 실패");
+      }
+
+      // 오늘의 미션 목록
+      const missionResponse = await axios.get(
+        `http://localhost:8888/mission-logs/daily?date=${dateParam}`,
+        {
+            headers: { Authorization: token } 
+        }
+      );
+      console.log("통신 성공 여부:", missionResponse.status); 
+      console.log("백엔드에서 준 데이터 전체:", missionResponse.data);
+      const missionList = missionResponse.data.missions || [];
+      setMissions(missionList);
+
+    } catch (error) {
+      console.error("데이터 로딩 에러:", error);
+      setMissions([]); 
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // 미션 체크 토글 함수
-  const toggleMission = (id) => {
+  // 2. 미션 체크 
+  const toggleMission = async (missionId, currentSuccessStatus) => {
+    const newStatus = !currentSuccessStatus;
     setMissions(missions.map(m => 
-      m.id === id ? { ...m, completed: !m.completed } : m
+      m.missionId === missionId ? { ...m, success: newStatus } : m
     ));
+
+    try {
+        await axios.post('http://localhost:8888/mission-logs/check', {
+            missionId: missionId,
+            checkDate: date.toISOString().split('T')[0],
+            isChecked: newStatus
+        }, {
+            headers: { Authorization: token }
+        });
+        console.log("저장 성공!");
+    } catch (error) {
+        console.error("저장 실패:", error);
+        alert("저장 실패! 다시 시도해주세요.");
+        // 실패 시 원상복구
+        setMissions(missions.map(m => 
+            m.missionId === missionId ? { ...m, success: currentSuccessStatus } : m
+        ));
+    }
+  };
+
+
+  const total = missions.length;
+  const completedCount = missions.filter(m => m.success).length;
+  const progress = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+
+  const getAiMessage = () => {
+    if (progress === 0) return "시작이 반입니다! 오늘도 힘차게 출발해볼까요? 💪";
+    if (progress < 100) return "잘하고 있어요! 완벽한 하루를 만들어봐요! 🔥";
+    return "완벽해요! 오늘의 목표를 모두 달성하셨군요. 🎉";
   };
 
   const styles = {
@@ -40,14 +113,12 @@ const CalendarPage = () => {
     aiCard: { padding: '20px', borderRadius: '20px', background: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)', color: '#fff', marginTop: '20px', boxShadow: '0 4px 15px rgba(142, 197, 252, 0.4)' },
     missionItem: { display: 'flex', alignItems: 'flex-start', gap: '15px', marginBottom: '25px', cursor: 'pointer', padding: '15px', borderRadius: '12px', transition: 'background 0.2s' },
     missionText: { fontSize: '18px', color: '#333', lineHeight: '1.4', fontWeight: 'bold' },
-    subText: { fontSize: '14px', color: '#666', marginTop: '4px', background: '#f3f4f6', padding: '4px 8px', borderRadius: '6px', display: 'inline-block' },
     progressBarBg: { width: '100%', height: '12px', backgroundColor: '#f3f4f6', borderRadius: '6px', marginTop: '15px', overflow: 'hidden' },
     progressBarFill: { width: `${progress}%`, height: '100%', backgroundColor: '#333', borderRadius: '6px', transition: 'width 0.5s ease-in-out' }
   };
 
   return (
     <div style={styles.container}>
-      {/* 왼쪽: 달력 + 진행률 */}
       <div style={styles.leftCol}>
         <div style={styles.calendarCard}>
           <Calendar
@@ -55,8 +126,8 @@ const CalendarPage = () => {
             value={date}
             formatDay={(locale, date) => date.getDate()}
             tileContent={({ date }) => {
-              // 예시: 2월 21일 강조
-              if (date.getDate() === 21 && date.getMonth() === 1) {
+              const dateStr = date.toISOString().split('T')[0];
+              if (completedDates.includes(dateStr)) {
                   return <div style={{ width: '6px', height: '6px', background: '#333', borderRadius: '50%', margin: '5px auto' }}></div>;
               }
             }}
@@ -73,41 +144,36 @@ const CalendarPage = () => {
           </div>
         </div>
 
-        {/* 🤖 AI 응원 메시지 영역 (AI-001) */}
         <div style={styles.aiCard}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                 <Bot size={24} />
                 <span style={{ fontWeight: 'bold', fontSize: '16px' }}>AI Coach</span>
             </div>
-            <p style={{ lineHeight: '1.5', fontSize: '15px' }}>
-                "{getAiMessage()}"
-            </p>
+            <p style={{ lineHeight: '1.5', fontSize: '15px' }}>"{getAiMessage()}"</p>
         </div>
       </div>
 
-      {/* 오른쪽: 미션 목록 */}
       <div style={styles.rightCol}>
         <h3 style={{ marginBottom: '30px', fontSize: '24px', fontWeight: 'bold' }}>
           {date.getMonth() + 1}월 {date.getDate()}일의 미션
         </h3>
         
-        {missions.map((mission) => (
+        {missions.length > 0 ? missions.map((mission) => (
             <div 
-                key={mission.id} 
-                style={{ ...styles.missionItem, backgroundColor: mission.completed ? '#f9fafb' : 'white', border: mission.completed ? '1px solid #eee' : '1px solid white' }}
-                onClick={() => toggleMission(mission.id)}
+                key={mission.missionId} 
+                style={{ ...styles.missionItem, backgroundColor: mission.success ? '#f9fafb' : 'white' }}
+                onClick={() => toggleMission(mission.missionId, mission.success)}
             >
-                {mission.completed ? <CheckSquare size={28} color="#333" /> : <Square size={28} color="#ccc" />}
+                {mission.success ? <CheckSquare size={28} color="#333" /> : <Square size={28} color="#ccc" />}
+                
                 <div>
-                    <div style={{ ...styles.missionText, textDecoration: mission.completed ? 'line-through' : 'none', color: mission.completed ? '#aaa' : '#333' }}>
-                        {mission.title}
+                    <div style={{ ...styles.missionText, textDecoration: mission.success ? 'line-through' : 'none', color: mission.success ? '#aaa' : '#333' }}>
+                        {mission.missionName}
                     </div>
-                    <div style={styles.subText}>{mission.desc}</div>
                 </div>
             </div>
-        ))}
+        )) : <p>등록된 미션이 없습니다.</p>}
       </div>
-
       <style>{`
         .react-calendar { border: none; width: 100%; font-family: sans-serif; }
         .react-calendar__navigation button { font-size: 18px; font-weight: bold; }

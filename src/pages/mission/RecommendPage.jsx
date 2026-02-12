@@ -1,21 +1,53 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { Sparkles, Brain, CheckCircle } from 'lucide-react';
 
+
+
 const RecommendPage = () => {
+
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
-  const handleAnalysis = () => {
+  const token = localStorage.getItem('accessToken') || '';
+  const habitId = 1; 
+
+  const handleAnalysis = async () => {
+
+    if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+    }
+
     setLoading(true);
-    // AI가 분석하는 척 2초 딜레이
-    setTimeout(() => {
-        setLoading(false);
-        setResult({
-            habit: "아침 공복에 물 한 잔 & 스트레칭",
-            reason: "사용자님의 '건강' 관심사와 불규칙한 생활 패턴을 분석했을 때, 가장 부담 없이 시작할 수 있는 루틴입니다.",
-            period: "추천 기간: 2주 (Level 1)"
+
+    try {
+
+        const response = await axios.get(`http://localhost:8888/ai/recommend/mission`, {
+            params: { habitId: habitId },
+            headers: { Authorization: token } 
         });
-    }, 2000);
+
+        const recommendations = response.data.missions || [];
+
+        if (recommendations.length > 0) {
+            setResult({
+                habit: recommendations[0].missionName,
+                reason: recommendations[0].missionDefinition || "AI 분석 기반 추천",
+                period: recommendations[0].levelName || "Level 1"
+            });
+
+        } else {
+            alert("추천할 미션이 없습니다.");
+        }
+
+    } catch (error) {
+        console.error("AI 분석 실패:", error);
+        alert("분석 중 오류가 발생했습니다.");
+    } finally {
+        setLoading(false);
+    }
+
   };
 
   const styles = {
@@ -28,29 +60,23 @@ const RecommendPage = () => {
     tag: { display: 'inline-block', padding: '8px 16px', borderRadius: '20px', border: '1px solid #ddd', marginRight: '10px', marginBottom: '10px', cursor: 'pointer' }
   };
 
+
+
   return (
+
     <div style={styles.container}>
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
         <Sparkles size={48} color="#FFD700" />
       </div>
       <h1 style={styles.title}>AI 습관 추천</h1>
       <p style={styles.subtitle}>데이터를 기반으로 당신에게 딱 맞는 습관을 찾아드려요.</p>
-
       <div style={styles.card}>
         {!result ? (
             <>
-                <h3 style={{ textAlign: 'left', marginBottom: '15px' }}>요즘 가장 관심 있는 분야는?</h3>
-                <div style={{ textAlign: 'left' }}>
-                    {['💪 헬스/운동', '📚 독서/공부', '🥗 식단 관리', '💤 수면 패턴'].map(tag => (
-                        <span key={tag} style={styles.tag}>{tag}</span>
-                    ))}
-                </div>
-                
+                <h3 style={{ textAlign: 'left', marginBottom: '15px' }}>분석할 습관 ID: {habitId}</h3>
                 <button style={styles.button} onClick={handleAnalysis} disabled={loading}>
                     {loading ? (
-                        <>
-                            <Brain className="animate-pulse" /> AI가 분석 중입니다...
-                        </>
+                        <><Brain className="animate-pulse" /> AI가 분석 중입니다...</>
                     ) : (
                         "내 맞춤 습관 분석하기"
                     )}
@@ -60,14 +86,11 @@ const RecommendPage = () => {
             <div className="animate-fade-in">
                 <CheckCircle size={48} color="#4CAF50" style={{ margin: '0 auto 20px' }} />
                 <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>분석 완료!</h2>
-                
                 <div style={styles.resultBox}>
-                    <p style={{ fontSize: '14px', color: '#888', marginBottom: '5px' }}>추천 습관</p>
+                    <p style={{ fontSize: '14px', color: '#888', marginBottom: '5px' }}>추천 미션</p>
                     <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '15px', color: '#3b82f6' }}>{result.habit}</h3>
-                    
-                    <p style={{ fontSize: '14px', color: '#888', marginBottom: '5px' }}>추천 이유</p>
+                    <p style={{ fontSize: '14px', color: '#888', marginBottom: '5px' }}>설명</p>
                     <p style={{ lineHeight: '1.5', color: '#333', marginBottom: '15px' }}>{result.reason}</p>
-
                     <div style={{ background: '#333', color: 'white', padding: '5px 10px', borderRadius: '4px', display: 'inline-block', fontSize: '12px' }}>
                         {result.period}
                     </div>
@@ -83,3 +106,4 @@ const RecommendPage = () => {
 };
 
 export default RecommendPage;
+
