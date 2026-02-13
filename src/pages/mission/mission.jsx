@@ -318,6 +318,9 @@ const Mission = () => {
                 levelId: Number(e.target.value)
               })
             }
+            disabled={
+              !customMission.modeId || modeList.find((m) => m.modeId === customMission.modeId)?.modeName !== "자율 선택"
+            }
           >
             <option value="">레벨 선택</option>
             {levelList.map((level) => (
