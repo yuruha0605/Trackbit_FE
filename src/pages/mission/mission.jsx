@@ -141,7 +141,8 @@ const Mission = () => {
       resetForm();
       fetchMissions();
     } catch (err) {
-      console.error("등록 실패", err);
+      alert("모든 입력을 완료했는지 확인해주세요.");
+      console.log(err);
     }
   };
 
