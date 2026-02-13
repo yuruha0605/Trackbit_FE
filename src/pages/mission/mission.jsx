@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import "./mission.css";
+import { useNavigate } from "react-router-dom";
 
 const Mission = () => {
   // ================= 공통 Authorization =================
   const token = localStorage.getItem("accessToken");
+
+  const navigate = useNavigate();
 
   const authConfig = {
     headers: {
@@ -183,6 +186,21 @@ const Mission = () => {
     });
   };
 
+  const handleRecommendedClick = (mission) => {
+    setEditingMissionId(null);
+    setCustomMission({
+      habitId: mission.habitId,
+      modeId: mission.modeId,
+      levelId: mission.levelId,
+      missionName: mission.missionName,
+      missionDefinition: mission.missionDefinition,
+    });
+  };
+
+  const handleMissionClick = (missionId) => {
+    navigate(`/review?id=${missionId}`);
+  };
+
   // ================= 초기 로딩 =================
   useEffect(() => {
     fetchTags();
@@ -203,7 +221,7 @@ const Mission = () => {
             <p>습관을 선택하면 추천 미션이 표시됩니다.</p>
           )}
           {recommendedMissions.map((mission, index) => (
-            <div key={index} className="mission-item recommended">
+            <div key={index} className="mission-item recommended" onClick={() => handleRecommendedClick(mission)} style={{cursor: "pointer"}}>
               <h4>{mission.missionName}</h4>
               <p>{mission.missionDefinition}</p>
               <small>권장 레벨: {mission.levelName}</small>
@@ -228,6 +246,9 @@ const Mission = () => {
               <button onClick={() => startEdit(mission)}>수정</button>
               <button onClick={() => handleDelete(mission.missionId)}>
                 삭제
+              </button>
+              <button onClick={() => handleMissionClick(mission.missionId)}>
+                댓글로 이동
               </button>
             </div>
           ))}
