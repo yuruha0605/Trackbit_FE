@@ -1,104 +1,106 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Sparkles, Brain, CheckCircle } from 'lucide-react';
-
-
+import { Sparkles, Brain, CheckCircle, Activity, BookOpen, Coffee, Monitor } from 'lucide-react';
 
 const RecommendPage = () => {
-
+  const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
 
   const token = localStorage.getItem('accessToken') || '';
-  const habitId = 1; 
+  
+  const storedUser = localStorage.getItem('user');
+  const userObj = storedUser ? JSON.parse(storedUser) : null;
+  const userId = userObj ? userObj.loginId : null;
 
-  const handleAnalysis = async () => {
-
+  const handleGetRecommendation = async () => {
     if (!token) {
         alert("로그인이 필요합니다.");
         return;
     }
-
-    setLoading(true);
-
-    try {
-
-        const response = await axios.get(`http://localhost:8888/ai/recommend/mission`, {
-            params: { habitId: habitId },
-            headers: { Authorization: token } 
-        });
-
-        const recommendations = response.data.missions || [];
-
-        if (recommendations.length > 0) {
-            setResult({
-                habit: recommendations[0].missionName,
-                reason: recommendations[0].missionDefinition || "AI 분석 기반 추천",
-                period: recommendations[0].levelName || "Level 1"
-            });
-
-        } else {
-            alert("추천할 미션이 없습니다.");
-        }
-
-    } catch (error) {
-        console.error("AI 분석 실패:", error);
-        alert("분석 중 오류가 발생했습니다.");
-    } finally {
-        setLoading(false);
+    if (!userId) {
+        alert("유저 정보(ID)를 찾을 수 없습니다. 다시 로그인해주세요.");
+        return;
     }
 
+    setLoading(true);
+    try {
+
+      const res = await axios.get(`http://localhost:8888/ai/recommend/habit`, {
+        headers: { Authorization: token },
+        params: { userId: userId } 
+      });
+
+      console.log("추천 데이터:", res.data);
+      setRecommendations(res.data.recommendedHabits || []);
+
+    } catch (error) {
+      console.error("AI 추천 실패", error);
+      if (error.response && error.response.status === 400) {
+          alert("요청 실패: 사용자 ID가 전달되지 않았습니다.");
+      } else {
+          alert("AI 추천을 받아오지 못했습니다.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const styles = {
-    container: { padding: '40px', maxWidth: '600px', margin: '0 auto', fontFamily: 'sans-serif', textAlign: 'center' },
-    title: { fontSize: '28px', fontWeight: 'bold', marginBottom: '10px' },
-    subtitle: { color: '#666', marginBottom: '40px' },
-    card: { padding: '30px', borderRadius: '24px', border: '1px solid #e5e7eb', backgroundColor: 'white', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' },
-    button: { width: '100%', padding: '15px', marginTop: '20px', borderRadius: '12px', border: 'none', background: '#333', color: 'white', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' },
-    resultBox: { marginTop: '30px', textAlign: 'left', background: '#f8f9fa', padding: '20px', borderRadius: '16px' },
-    tag: { display: 'inline-block', padding: '8px 16px', borderRadius: '20px', border: '1px solid #ddd', marginRight: '10px', marginBottom: '10px', cursor: 'pointer' }
+    container: { padding: '40px', maxWidth: '1200px', margin: '0 auto', fontFamily: 'sans-serif' },
+    header: { textAlign: 'center', marginBottom: '40px' },
+    buttonArea: { display: 'flex', justifyContent: 'center', marginBottom: '50px' },
+    recBtn: { 
+        padding: '15px 30px', fontSize: '18px', fontWeight: 'bold', color: 'white', 
+        backgroundColor: loading ? '#9ca3af' : '#6366f1', 
+        border: 'none', borderRadius: '30px', cursor: loading ? 'not-allowed' : 'pointer',
+        display: 'flex', alignItems: 'center', gap: '10px', transition: '0.3s'
+    },
+    grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' },
+    card: { backgroundColor: 'white', padding: '30px', borderRadius: '20px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' },
+    tag: { display: 'inline-block', padding: '5px 12px', borderRadius: '15px', fontSize: '14px', marginBottom: '15px', backgroundColor: '#f3f4f6', color: '#4b5563' },
+    missionBox: { marginTop: '20px', backgroundColor: '#f9fafb', padding: '15px', borderRadius: '12px' }
   };
 
-
-
   return (
-
     <div style={styles.container}>
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-        <Sparkles size={48} color="#FFD700" />
+      <div style={styles.header}>
+        <h1 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '10px' }}>AI 습관 코치</h1>
+        <p style={{ color: '#666', fontSize: '18px' }}>
+            {userObj ? `${userObj.name}님` : '사용자'}의 직업과 관심사를 분석해 딱 맞는 습관을 추천해드려요.
+        </p>
       </div>
-      <h1 style={styles.title}>AI 습관 추천</h1>
-      <p style={styles.subtitle}>데이터를 기반으로 당신에게 딱 맞는 습관을 찾아드려요.</p>
-      <div style={styles.card}>
-        {!result ? (
-            <>
-                <h3 style={{ textAlign: 'left', marginBottom: '15px' }}>분석할 습관 ID: {habitId}</h3>
-                <button style={styles.button} onClick={handleAnalysis} disabled={loading}>
-                    {loading ? (
-                        <><Brain className="animate-pulse" /> AI가 분석 중입니다...</>
-                    ) : (
-                        "내 맞춤 습관 분석하기"
-                    )}
-                </button>
-            </>
-        ) : (
-            <div className="animate-fade-in">
-                <CheckCircle size={48} color="#4CAF50" style={{ margin: '0 auto 20px' }} />
-                <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>분석 완료!</h2>
-                <div style={styles.resultBox}>
-                    <p style={{ fontSize: '14px', color: '#888', marginBottom: '5px' }}>추천 미션</p>
-                    <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '15px', color: '#3b82f6' }}>{result.habit}</h3>
-                    <p style={{ fontSize: '14px', color: '#888', marginBottom: '5px' }}>설명</p>
-                    <p style={{ lineHeight: '1.5', color: '#333', marginBottom: '15px' }}>{result.reason}</p>
-                    <div style={{ background: '#333', color: 'white', padding: '5px 10px', borderRadius: '4px', display: 'inline-block', fontSize: '12px' }}>
-                        {result.period}
-                    </div>
-                </div>
-                <button style={{ ...styles.button, background: '#f3f4f6', color: '#333' }} onClick={() => setResult(null)}>
-                    다시 분석하기
-                </button>
+
+      <div style={styles.buttonArea}>
+        <button style={styles.recBtn} onClick={handleGetRecommendation} disabled={loading}>
+          {loading ? <Sparkles className="spin" /> : <Brain />}
+          {loading ? "AI가 분석 중입니다..." : "AI 추천 받기"}
+        </button>
+      </div>
+
+      <div style={styles.grid}>
+        {recommendations.length > 0 ? (
+          recommendations.map((habit, idx) => (
+            <div key={idx} style={styles.card}>
+              <span style={styles.tag}>{habit.tagName || '추천'}</span>
+              <h3 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '10px' }}>{habit.habitName}</h3>
+              <p style={{ color: '#555', lineHeight: '1.6', marginBottom: '20px' }}>{habit.habitDefinition}</p>
+              
+              <div style={styles.missionBox}>
+                <h4 style={{ fontWeight: 'bold', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <Activity size={16} /> 추천 미션
+                </h4>
+                <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                    {habit.recommendedMissions && habit.recommendedMissions.map((m, mIdx) => (
+                        <li key={mIdx} style={{ marginBottom: '5px', color: '#444' }}>
+                            <strong>[{m.levelName}]</strong> {m.missionName}
+                        </li>
+                    ))}
+                </ul>
+              </div>
             </div>
+          ))
+        ) : (
+          !loading && <div style={{textAlign:'center', gridColumn:'1/-1', color:'#999'}}>버튼을 눌러 나에게 맞는 습관을 찾아보세요!</div>
         )}
       </div>
     </div>
@@ -106,4 +108,3 @@ const RecommendPage = () => {
 };
 
 export default RecommendPage;
-
