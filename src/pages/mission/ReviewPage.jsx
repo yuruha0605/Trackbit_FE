@@ -6,7 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 const ReviewPage = () => {
   const [reviews, setReviews] = useState([]);
   const [dailyMissions, setDailyMissions] = useState([]); 
-  const [selectedMissionId, setSelectedMissionId] = useState(1); 
+  const [selectedMissionId, setSelectedMissionId] = useState(null); 
   const [inputText, setInputText] = useState('');
   
   const [searchParams] = useSearchParams();
@@ -21,13 +21,13 @@ const ReviewPage = () => {
   };
 
   useEffect(() => {
-    const initId = searchParams.get('id');
-    if (initId) setSelectedMissionId(Number(initId));
     fetchDailyMissions();
   }, []);
 
   useEffect(() => {
-    fetchReviews();
+    if (selectedMissionId) {
+      fetchReviews();
+    }
   }, [selectedMissionId]);
 
   const fetchDailyMissions = async () => {
@@ -37,11 +37,13 @@ const ReviewPage = () => {
       const res = await axios.get(`http://localhost:8888/mission-logs/daily?date=${dateParam}`, {
         headers: { Authorization: token }
       });
-      const list = res.data.missions || res.data || [];
+      
+      const list = res.data.missions || res.data.dailyMissionItems || res.data || [];
       setDailyMissions(list);
       
-      if (!searchParams.get('id') && list.length > 0) {
-        setSelectedMissionId(list[0].id);
+      if (list.length > 0) {
+        const firstId = list[0].missionId;
+        setSelectedMissionId(Number(firstId));
       }
     } catch (err) {
       console.error("미션 목록 로딩 실패", err);
@@ -49,7 +51,7 @@ const ReviewPage = () => {
   };
 
   const fetchReviews = async () => {
-    if (!token) return;
+    if (!token || !selectedMissionId) return;
     try {
         const res = await axios.get(`http://localhost:8888/comments/mission/${selectedMissionId}/comment`, {
             headers: { Authorization: token }
@@ -61,7 +63,7 @@ const ReviewPage = () => {
   };
 
   const handleAddReview = async () => {
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || !selectedMissionId) return;
     if (!token) { alert("로그인이 필요합니다."); return; }
 
     try {
@@ -80,37 +82,6 @@ const ReviewPage = () => {
     }
   };
 
-  const handleDeleteReview = async (commentId) => {
-    if (!window.confirm("정말 삭제하시겠습니까?")) return;
-    try {
-      await axios.delete(`http://localhost:8888/comments/delete/${commentId}`, {
-        headers: { Authorization: token }
-      });
-      setReviews(prev => prev.filter(r => (r.commentId || r.id) !== commentId));
-    } catch (error) {
-      alert("삭제 실패");
-    }
-  };
-
-  const handleEditReview = async (commentId, oldContent) => {
-    const newContent = prompt("수정할 내용을 입력해주세요:", oldContent);
-    if (!newContent || newContent.trim() === "") return;
-
-    try {
-      await axios.put(`http://localhost:8888/comments/update/${commentId}`, {
-
-        content: newContent
-      }, {
-        headers: { Authorization: token }
-      });
-      
-      setReviews(prev => prev.map(r => (r.commentId || r.id) === commentId ? {...r, content: newContent} : r));
-      alert("수정되었습니다.");
-    } catch (error) {
-      alert("수정 실패");
-    }
-  };
-
   const styles = {
     container: { padding: '40px', maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '40px', height: '80vh', fontFamily: 'sans-serif' },
     leftCard: { width: '400px', backgroundColor: 'white', borderRadius: '20px', border: '1px solid #e5e7eb', padding: '30px', display: 'flex', flexDirection: 'column', gap: '20px' },
@@ -125,8 +96,6 @@ const ReviewPage = () => {
     actionBtn: { background: 'none', border: 'none', cursor: 'pointer', color: '#999', padding:'5px' }
   };
 
-  const currentMission = dailyMissions.find(m => m.id === selectedMissionId) || {};
-
   return (
     <div style={styles.container}>
       <div style={styles.leftCard}>
@@ -134,18 +103,14 @@ const ReviewPage = () => {
             <label style={{display:'block', marginBottom:'8px', fontWeight:'bold', color:'#555'}}>미션 선택</label>
             <select 
                 style={styles.selectBox} 
-                value={selectedMissionId} 
+                value={selectedMissionId || ""} 
                 onChange={(e) => setSelectedMissionId(Number(e.target.value))}
             >
-                {dailyMissions.length > 0 ? (
-                    dailyMissions.map(m => (
-                        <option key={m.id} value={m.id}>
-                            {m.content || m.title || `미션 ${m.id}`}
-                        </option>
-                    ))
-                ) : (
-                    <option value={selectedMissionId}>미션 로딩 중...</option>
-                )}
+                {dailyMissions.map((m, index) => (
+                    <option key={index} value={m.missionId}>
+                        {m.missionName || `미션 ${m.missionId}`}
+                    </option>
+                ))}
             </select>
         </div>
 
@@ -155,16 +120,18 @@ const ReviewPage = () => {
         </div>
 
         <div>
-          <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>미션 #{selectedMissionId}</h2>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>
+            미션 #{selectedMissionId || " - "}
+          </h2>
           <p style={{ color: '#666', fontSize:'16px', marginTop:'5px' }}>
-             {currentMission.content || currentMission.title || "오늘의 미션 완료!"}
+             {/* 현재 선택된 미션의 이름(missionName) 표시 */}
+             {dailyMissions.find(m => m.missionId === selectedMissionId)?.missionName || "오늘의 미션 완료!"}
           </p>
         </div>
       </div>
 
       <div style={styles.rightCard}>
         <h3 style={{ fontSize: '24px', fontWeight: 'bold' }}>습관 공유 ({reviews.length})</h3>
-        
         <div style={styles.reviewList}>
           {reviews.length > 0 ? reviews.map((review) => (
             <div key={review.commentId || review.id} style={styles.reviewItem}>
@@ -173,35 +140,18 @@ const ReviewPage = () => {
                   <div style={{ width: '32px', height: '32px', background: '#eee', borderRadius: '50%', display:'flex', justifyContent:'center', alignItems:'center' }}><User size={16}/></div>
                   <span style={{ fontWeight: 'bold' }}>{review.userId || '익명'}</span>
                 </div>
-                <div style={{display:'flex', gap:'5px'}}>
-                    <button style={styles.actionBtn} onClick={() => handleEditReview(review.commentId || review.id, review.content)}>
-                        <Edit2 size={16} />
-                    </button>
-                    <button style={styles.actionBtn} onClick={() => handleDeleteReview(review.commentId || review.id)}>
-                        <Trash2 size={16} />
-                    </button>
-                </div>
               </div>
               <p style={{ color: '#333', lineHeight: '1.5' }}>{review.content}</p>
             </div>
           )) : <p style={{color:'#999', textAlign:'center', marginTop:'50px'}}>첫 번째 후기를 남겨보세요!</p>}
         </div>
-
         <div style={styles.inputArea}>
-          <input 
-            type="text" 
-            placeholder="서로 응원의 한마디를 남겨주세요..." 
-            style={styles.input}
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleAddReview()} 
-          />
-          <button style={styles.sendBtn} onClick={handleAddReview}>
-            <Send size={24} />
-          </button>
+          <input type="text" placeholder="서로 응원의 한마디를 남겨주세요..." style={styles.input} value={inputText} onChange={(e) => setInputText(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAddReview()} />
+          <button style={styles.sendBtn} onClick={handleAddReview}><Send size={24} /></button>
         </div>
       </div>
     </div>
   );
 };
+
 export default ReviewPage;
