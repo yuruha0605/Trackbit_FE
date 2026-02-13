@@ -32,7 +32,7 @@ const Mission = () => {
   const [customMission, setCustomMission] = useState({
     habitId: "",
     modeId: "",
-    levelId: "",
+    levelId: 1,
     missionName: "",
     missionDefinition: ""
   });
@@ -129,12 +129,12 @@ const Mission = () => {
   const handleRegister = async () => {
     try {
       const payload = {
-      habitId: Number(customMission.habitId),
-      modeId: Number(customMission.modeId),
-      levelId: customMission.levelId,
-      missionName: customMission.missionName,
-      missionDefinition: customMission.missionDefinition
-    };
+        habitId: Number(customMission.habitId),
+        modeId: Number(customMission.modeId),
+        levelId: customMission.levelId || 1,
+        missionName: customMission.missionName,
+        missionDefinition: customMission.missionDefinition
+      };
 
       await api.post("/missions/register", payload, authConfig);
       alert("등록 완료");
@@ -177,7 +177,7 @@ const Mission = () => {
     setCustomMission({
       habitId: mission.habitId,
       modeId: mission.modeId,
-      levelId: mission.levelId,
+      levelId: mission.levelId || 1,
       missionName: mission.missionName,
       missionDefinition: mission.missionDefinition
     });
@@ -188,7 +188,7 @@ const Mission = () => {
     setCustomMission({
       habitId: "",
       modeId: "",
-      levelId: "",
+      levelId: 1,
       missionName: "",
       missionDefinition: ""
     });
@@ -197,9 +197,9 @@ const Mission = () => {
   const handleRecommendedClick = (mission) => {
     setEditingMissionId(null);
     setCustomMission({
-      habitId: mission.habitId,
-      modeId: mission.modeId,
-      levelId: mission.levelId,
+      habitId: customMission.habitId,
+      modeId: customMission.modeId,
+      levelId: customMission.levelId || 1,
       missionName: mission.missionName,
       missionDefinition: mission.missionDefinition,
     });
@@ -319,12 +319,16 @@ const Mission = () => {
           </select>
 
           <select
-            value={customMission.levelId}
+            value={customMission.levelId || 1}
             onChange={(e) =>
               setCustomMission({
                 ...customMission,
                 levelId: Number(e.target.value)
               })
+            }
+            disabled={
+              !customMission.modeId ||
+              modeList.find((m) => m.modeId === customMission.modeId)?.modeName !== "자율 선택"
             }
           >
             <option value="">레벨 선택</option>
