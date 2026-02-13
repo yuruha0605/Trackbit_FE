@@ -20,19 +20,18 @@ const ReviewPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // 초기 로딩: 미션 목록 가져오기
+  
   useEffect(() => {
     fetchDailyMissions();
   }, []);
 
-  // 선택된 미션이 바뀔 때마다 댓글 새로고침
+
   useEffect(() => {
     if (selectedMissionId) {
       fetchReviews();
     }
   }, [selectedMissionId]);
 
-  // [API] 미션 목록 조회 (백엔드 DailyMissionItemDTO 구조 반영)
   const fetchDailyMissions = async () => {
     if (!token) return;
     try {
@@ -44,7 +43,7 @@ const ReviewPage = () => {
       setDailyMissions(list);
       
       if (list.length > 0) {
-        // 백엔드 필드명 missionId 사용
+
         setSelectedMissionId(Number(list[0].missionId));
       }
     } catch (err) {
@@ -52,7 +51,7 @@ const ReviewPage = () => {
     }
   };
 
-  // [API] 댓글 조회
+
   const fetchReviews = async () => {
     if (!token || !selectedMissionId) return;
     try {
@@ -65,7 +64,7 @@ const ReviewPage = () => {
     }
   };
 
-  // [API] 댓글 작성 (title 제거 반영)
+
   const handleAddReview = async () => {
     if (!inputText.trim() || !selectedMissionId) return;
     try {
@@ -82,7 +81,6 @@ const ReviewPage = () => {
     }
   };
 
-  // [API] 댓글 수정
   const handleEditReview = async (commentId, oldContent) => {
     const newContent = prompt("수정할 내용을 입력해주세요:", oldContent);
     if (!newContent || newContent.trim() === "") return;
@@ -99,7 +97,7 @@ const ReviewPage = () => {
     }
   };
 
-  // [API] 댓글 삭제
+
   const handleDeleteReview = async (commentId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
