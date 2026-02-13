@@ -461,6 +461,7 @@ const HabitAdd = () => {
                     type="button"
                     className="habit-btn-primary"
                     onClick={handleUpdateHabit}
+                    disabled={!joined}
                   >
                     수정
                   </button>
