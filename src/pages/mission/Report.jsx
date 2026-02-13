@@ -75,8 +75,8 @@ const Report = () => {
         )}
 
         {habitProgressList.map((mission) => {
-          const fillWidth = `${mission.progress}%`;
-          const shadowWidth = `${Math.min(mission.progress + 20, 100)}%`;
+          const fillWidth = `${mission.progress * 100}%`;
+          const shadowWidth = `${Math.min(mission.progress * 100 + 20, 100)}%`;
 
           return (
             <div key={mission.habitId} className="stat-row">
@@ -85,7 +85,7 @@ const Report = () => {
                 <div className="progress-shadow" style={{ width: shadowWidth }}></div>
                 <div className="progress-fill" style={{ width: fillWidth }}></div>
               </div>
-              <span className="percentage">{mission.progress}%</span>
+              <span className="percentage">{mission.progress * 100}%</span>
             </div>
           );
         })}
