@@ -21,7 +21,7 @@ const HabitAdd = () => {
     habitName: "",
     habitDefinition: "",
     tagId: 0,
-    styleId: 1, // ✅ 기본 반복형
+    styleId: 1,
     startValue: 0,
     stepValue: 0,
     targetValue: 0,
@@ -216,6 +216,11 @@ const HabitAdd = () => {
       );
       alert(data.message);
       setJoined(true);
+      setHabitList((prev) =>
+        prev.map((h) => 
+          h.habitId === formData.habitId ? {...h, joined: true} : h
+        )
+      );
     } catch (err) {
       console.error("참여 실패:", err);
       alert("참여 실패");
@@ -231,6 +236,12 @@ const HabitAdd = () => {
       });
       alert("참여 취소 완료");
       setJoined(false);
+
+      setHabitList((prev) =>
+        prev.map((h) => 
+          h.habitId === formData.habitId ? {...h, joined: false} : h
+        )
+      );
     } catch (err) {
       console.error("참여 취소 실패:", err);
       alert("참여 취소 실패");
