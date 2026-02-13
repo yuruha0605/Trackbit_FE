@@ -32,7 +32,7 @@ const Mission = () => {
   const [customMission, setCustomMission] = useState({
     habitId: "",
     modeId: "",
-    levelId: "",
+    levelId: 1,
     missionName: "",
     missionDefinition: ""
   });
@@ -128,7 +128,15 @@ const Mission = () => {
   // ================= 등록 =================
   const handleRegister = async () => {
     try {
-      await api.post("/missions/register", customMission, authConfig);
+      const payload = {
+      habitId: Number(customMission.habitId),
+      modeId: Number(customMission.modeId),
+      levelId: customMission.levelId || 1,
+      missionName: customMission.missionName,
+      missionDefinition: customMission.missionDefinition
+    };
+
+      await api.post("/missions/register", payload, authConfig);
       alert("등록 완료");
       resetForm();
       fetchMissions();
@@ -180,7 +188,7 @@ const Mission = () => {
     setCustomMission({
       habitId: "",
       modeId: "",
-      levelId: "",
+      levelId: 1,
       missionName: "",
       missionDefinition: ""
     });
@@ -221,7 +229,7 @@ const Mission = () => {
             <p>습관을 선택하면 추천 미션이 표시됩니다.</p>
           )}
           {recommendedMissions.map((mission, index) => (
-            <div key={index} className="mission-item recommended" onClick={() => handleRecommendedClick(mission)} style={{cursor: "pointer"}}>
+            <div key={index} className="mission-item recommended" onClick={() => handleRecommendedClick(mission)} style={{ cursor: "pointer" }}>
               <h4>{mission.missionName}</h4>
               <p>{mission.missionDefinition}</p>
               <small>권장 레벨: {mission.levelName}</small>
@@ -311,7 +319,7 @@ const Mission = () => {
           </select>
 
           <select
-            value={customMission.levelId}
+            value={customMission.levelId || 1}
             onChange={(e) =>
               setCustomMission({
                 ...customMission,
@@ -319,7 +327,8 @@ const Mission = () => {
               })
             }
             disabled={
-              !customMission.modeId || modeList.find((m) => m.modeId === customMission.modeId)?.modeName !== "자율 선택"
+              !customMission.modeId ||
+              modeList.find((m) => m.modeId === customMission.modeId)?.modeName !== "자율 선택"
             }
           >
             <option value="">레벨 선택</option>
