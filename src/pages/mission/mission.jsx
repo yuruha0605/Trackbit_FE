@@ -32,7 +32,7 @@ const Mission = () => {
   const [customMission, setCustomMission] = useState({
     habitId: "",
     modeId: "",
-    levelId: 1,
+    levelId: "",
     missionName: "",
     missionDefinition: ""
   });
@@ -131,7 +131,7 @@ const Mission = () => {
       const payload = {
       habitId: Number(customMission.habitId),
       modeId: Number(customMission.modeId),
-      levelId: customMission.levelId || 1,
+      levelId: customMission.levelId,
       missionName: customMission.missionName,
       missionDefinition: customMission.missionDefinition
     };
@@ -188,7 +188,7 @@ const Mission = () => {
     setCustomMission({
       habitId: "",
       modeId: "",
-      levelId: 1,
+      levelId: "",
       missionName: "",
       missionDefinition: ""
     });
@@ -319,7 +319,7 @@ const Mission = () => {
           </select>
 
           <select
-            value={customMission.levelId || 1}
+            value={customMission.levelId}
             onChange={(e) =>
               setCustomMission({
                 ...customMission,
