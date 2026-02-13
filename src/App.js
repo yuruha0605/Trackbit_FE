@@ -22,6 +22,7 @@ import Report from "./pages/mission/Report";
 import CalendarPage from "./pages/mission/CalendarPage";
 import ReviewPage from "./pages/mission/ReviewPage";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import RecommendPage from "./pages/mission/RecommendPage";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
               <Route path="/Calendar" element={<CalendarPage />} />
 
               <Route path="/review" element={<ReviewPage />} />
+              <Route path="/recommend" element={<RecommendPage/>}/>
             </Route>
           </Routes>
         </main>

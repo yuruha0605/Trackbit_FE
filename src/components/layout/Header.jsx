@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { label: "Mission", path: "/mission" },
   { label: "Report", path: "/report" },
   { label: "Review", path: "/review" },
+  { label: "Recommend", path: "/recommend"},
   { label: "My Page", path: "/mypage" },
 ];
 
