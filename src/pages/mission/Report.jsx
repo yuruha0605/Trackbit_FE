@@ -85,7 +85,7 @@ const Report = () => {
                 <div className="progress-shadow" style={{ width: shadowWidth }}></div>
                 <div className="progress-fill" style={{ width: fillWidth }}></div>
               </div>
-              <span className="percentage">{mission.progress * 100}%</span>
+              <span className="percentage">{(mission.progress * 100).toFixed(2)}%</span>
             </div>
           );
         })}
